@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Montana Barber Shop - Reserva tu cita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f8f8;
+        }
+        
+        .gold-text {
+            color: #D4AF37;
+        }
+        
+        .gold-bg {
+            background-color: #D4AF37;
+        }
+        
+        .gold-border {
+            border-color: #D4AF37;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+        
+        .flatpickr-calendar {
+            font-family: 'Poppins', sans-serif !important;
+        }
+        
+        .whatsapp-btn:hover {
+            background-color: #25D366;
+            color: white;
+        }
+        
+        .facebook-btn:hover {
+            background-color: #3b5998;
+            color: white;
+        }
+        
+        .instagram-btn:hover {
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D, #F56040, #F77737, #FCAF45, #FFDC80);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Header -->
+    <header class="bg-black text-white sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center mr-3">
+                    <img src="https://i.imgur.com/qTy1zlY.png" alt="Montana Barber Shop Logo" class="w-full h-full object-contain">
+                </div>
+                <h1 class="text-xl font-bold gold-text">MONTANA <span class="text-white">BARBER SHOP</span></h1>
+            </div>
+            <a href="tel:+52899128124" class="bg-white text-black px-4 py-2 rounded-full font-medium flex items-center hover:bg-gray-200 transition-all">
+                <i class="fas fa-phone mr-2 gold-text"></i> Llamar
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="mb-12 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Corte de cabello profesional</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">Reserva tu cita en nuestra barbería premium y luce tu mejor estilo</p>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="mb-12">
+            <h3 class="text-2xl font-bold mb-6 text-center gold-text">Nuestros Servicios</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Service 1 -->
+                <div class="service-card bg-white rounded-lg shadow-md p-6 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Corte Clásico</h4>
+                        <span class="text-lg font-bold gold-text">$200 MXN</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Corte tradicional con tijera y máquina, incluye diseño básico.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 45 min</span>
+                        <button onclick="selectService('Corte Clásico', 200, 45)" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card bg-white rounded-lg shadow-md p-6 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Corte Premium</h4>
+                        <span class="text-lg font-bold gold-text">$300 MXN</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Corte detallado con acabado perfecto, incluye diseño y arreglo de barba.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 60 min</span>
+                        <button onclick="selectService('Corte Premium', 300, 60)" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card bg-white rounded-lg shadow-md p-6 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Afeitado Clásico</h4>
+                        <span class="text-lg font-bold gold-text">$250 MXN</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Afeitado tradicional con navaja, incluye toallas calientes y productos premium.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 40 min</span>
+                        <button onclick="selectService('Afeitado Clásico', 250, 40)" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="service-card bg-white rounded-lg shadow-md p-6 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Corte y Barba</h4>
+                        <span class="text-lg font-bold gold-text">$350 MXN</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Combo completo: corte premium más arreglo de barba con acabado profesional.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 75 min</span>
+                        <button onclick="selectService('Corte y Barba', 350, 75)" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="service-card bg-white rounded-lg shadow-md p-6 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Tinte de Barba</h4>
+                        <span class="text-lg font-bold gold-text">$180 MXN</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Tinte profesional para barba con productos de alta calidad.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 30 min</span>
+                        <button onclick="selectService('Tinte de Barba', 180, 30)" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="service-card bg-white rounded-lg shadow-md p-6 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Servicio Infantil</h4>
+                        <span class="text-lg font-bold gold-text">$150 MXN</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Corte especial para niños con ambiente amigable y diseño a elección.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 35 min</span>
+                        <button onclick="selectService('Servicio Infantil', 150, 35)" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Booking Form (initially hidden) -->
+        <section id="booking-form" class="hidden max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold gold-text">Reservar cita</h3>
+                <button onclick="closeBookingForm()" class="text-gray-500 hover:text-black">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="font-bold mb-2" id="selected-service-name">Servicio: Corte Clásico</h4>
+                <div class="flex justify-between">
+                    <span id="selected-service-price">Precio: $200 MXN</span>
+                    <span id="selected-service-duration">Duración: 45 min</span>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2" for="booking-date">Selecciona fecha:</label>
+                <input type="text" id="booking-date" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="Elige una fecha">
+                <p class="text-sm text-gray-500 mt-1">Las citas solo pueden reservarse con máximo 1 semana de anticipación</p>
+            </div>
+
+            <div id="time-slots-container" class="hidden mb-6">
+                <label class="block text-gray-700 mb-2">Horarios disponibles:</label>
+                <div id="time-slots" class="grid grid-cols-3 gap-3">
+                    <!-- Time slots will be generated here -->
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2" for="full-name">Nombre completo:</label>
+                <input type="text" id="full-name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="Tu nombre completo" required>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2" for="phone">Número de celular:</label>
+                <input type="tel" id="phone" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="55 1234 5678" required>
+            </div>
+            
+            <div class="mb-6">
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="policy-check" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-yellow-300" required>
+                    </div>
+                    <label for="policy-check" class="ml-2 text-sm text-gray-700">
+                        Requiero un anticipo no reembolsable de $50 MXN que se descuenta del precio final. Cancelaciones con menos de 24 horas pierden el anticipo.
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mb-6 text-center">
+                <button onclick="processPayment()" class="gold-bg text-black px-6 py-3 rounded-full font-bold w-full hover:bg-yellow-600 transition-all">
+                    Pagar anticipo de $50 MXN
+                </button>
+                <p class="text-sm text-gray-500 mt-2">El resto se paga al llegar</p>
+            </div>
+        </section>
+
+        <!-- Confirmation (initially hidden) -->
+        <section id="confirmation" class="hidden max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12 text-center">
+            <div class="mb-6">
+                <i class="fas fa-check-circle text-5xl gold-text mb-4"></i>
+                <h3 class="text-2xl font-bold mb-2">¡Tu cita ha sido reservada!</h3>
+                <p class="text-gray-600 mb-4">Hemos enviado los detalles a tu celular</p>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                    <p class="font-bold" id="confirmation-service">Servicio: Corte Clásico</p>
+                    <p id="confirmation-date">Fecha: 15 de Julio, 2023</p>
+                    <p id="confirmation-time">Hora: 4:30 PM</p>
+                    <p class="font-bold mt-2">Total a pagar: <span id="confirmation-total">$200 MXN</span></p>
+                    <p class="text-sm">(Anticipo de $50 MXN ya incluido)</p>
+                </div>
+                
+                <div class="flex flex-col space-y-3">
+                    <button onclick="addToCalendar()" class="bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition-all">
+                        <i class="far fa-calendar-plus mr-2"></i> Agregar a mi calendario
+                    </button>
+                    <button onclick="sendWhatsAppConfirmation()" class="bg-green-500 text-white px-6 py-3 rounded-full font-medium hover:bg-green-600 transition-all">
+                        <i class="fab fa-whatsapp mr-2"></i> Enviar confirmación por WhatsApp
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-xl font-bold mb-4 gold-text">MONTANA BARBER SHOP</h4>
+                    <p class="mb-4">Barbería profesional con los mejores estilistas de la ciudad.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="facebook-btn w-10 h-10 rounded-full border border-white flex items-center justify-center hover:border-transparent transition-all">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="instagram-btn w-10 h-10 rounded-full border border-white flex items-center justify-center hover:border-transparent transition-all">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/52899128124" class="whatsapp-btn w-10 h-10 rounded-full border border-white flex items-center justify-center hover:border-transparent transition-all">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-xl font-bold mb-4 gold-text">Horario</h4>
+                    <p class="mb-2">Lunes a Viernes: 9:00 AM - 7:00 PM</p>
+                    <p class="mb-2">Sábado: 9:00 AM - 5:00 PM</p>
+                    <p>Domingo: Cerrado</p>
+                </div>
+                
+                <div>
+                    <h4 class="text-xl font-bold mb-4 gold-text">Ubicación</h4>
+                    <p class="mb-4">
+                        <i class="fas fa-map-marker-alt mr-2 gold-text"></i> 
+                        Calle Río San Juan #415,<br>
+                        Col. Las Fuentes,<br>
+                        Reynosa, México
+                    </p>
+                    <a href="https://maps.google.com" class="inline-flex items-center gold-text hover:underline">
+                        <i class="fas fa-directions mr-2"></i> Cómo llegar
+                    </a>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500 relative">
+                <p>&copy; 2025 Montana Barber Shop. Todos los derechos reservados.</p>
+                <div class="absolute right-4 bottom-2 flex items-center">
+                    <span class="text-white text-sm mr-2">made by savi</span>
+                    <img src="https://i.imgur.com/Q57FOQQ.png" alt="savi logo" class="h-6 w-auto">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Selected service data
+        let selectedService = {
+            name: '',
+            price: 0,
+            duration: 0
+        };
+        
+        // Booking data
+        let bookingData = {
+            date: '',
+            time: '',
+            customerName: '',
+            phone: ''
+        };
+        
+        // Initialize date picker
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const minDate = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour from now
+            const maxDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 1 week from now
+            
+            // Initialize date picker (date only)
+            flatpickr("#booking-date", {
+                enableTime: false,
+                dateFormat: "d-m-Y",
+                minDate: minDate,
+                maxDate: maxDate,
+                disable: [
+                    function(date) {
+                        return (date.getDay() === 0); // Disable Sundays
+                    }
+                ],
+                locale: {
+                    firstDayOfWeek: 1 // Start week on Monday
+                },
+                onChange: function(selectedDates, dateStr, instance) {
+                    const date = selectedDates[0];
+                    bookingData.date = date.toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    
+                    // Generate time slots for selected date
+                    generateTimeSlots(date);
+                    document.getElementById('time-slots-container').classList.remove('hidden');
+                }
+            });
+
+            // Generate available time slots
+            function generateTimeSlots(date) {
+                const timeSlotsContainer = document.getElementById('time-slots');
+                timeSlotsContainer.innerHTML = '';
+                
+                // Business hours
+                const openingHour = 9; // 9 AM
+                const closingHour = 19; // 7 PM
+                const slotDuration = 30; // minutes
+                
+                // Generate slots from opening to closing time
+                for (let hour = openingHour; hour < closingHour; hour++) {
+                    for (let minute = 0; minute < 60; minute += slotDuration) {
+                        // Skip if it's the last slot of the day
+                        if (hour === closingHour - 1 && minute >= 30) continue;
+                        
+                        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                        
+                        const slot = document.createElement('button');
+                        slot.type = 'button';
+                        slot.className = 'bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg py-2 px-3 text-center transition-all';
+                        slot.textContent = timeString;
+                        
+                        slot.addEventListener('click', function() {
+                            // Remove active class from all slots
+                            document.querySelectorAll('#time-slots button').forEach(btn => {
+                                btn.classList.remove('bg-yellow-100', 'border-yellow-500');
+                            });
+                            
+                            // Add active class to selected slot
+                            this.classList.add('bg-yellow-100', 'border-yellow-500');
+                            
+                            bookingData.time = timeString;
+                        });
+                        
+                        timeSlotsContainer.appendChild(slot);
+                    }
+                }
+            }
+        });
+        
+        // Select service function
+        function selectService(name, price, duration) {
+            selectedService.name = name;
+            selectedService.price = price;
+            selectedService.duration = duration;
+            
+            // Update UI
+            document.getElementById('selected-service-name').textContent = `Servicio: ${name}`;
+            document.getElementById('selected-service-price').textContent = `Precio: $${price} MXN`;
+            document.getElementById('selected-service-duration').textContent = `Duración: ${duration} min`;
+            
+            // Show booking form
+            document.getElementById('services').classList.add('hidden');
+            document.getElementById('booking-form').classList.remove('hidden');
+        }
+        
+        // Close booking form
+        function closeBookingForm() {
+            document.getElementById('booking-form').classList.add('hidden');
+            document.getElementById('services').classList.remove('hidden');
+        }
+        
+        // Process payment (simulated)
+        function processPayment() {
+            // Validate form
+            const fullName = document.getElementById('full-name').value;
+            const phone = document.getElementById('phone').value;
+            const date = document.getElementById('booking-date').value;
+            const time = bookingData.time;
+            const policyCheck = document.getElementById('policy-check').checked;
+            
+            if (!fullName || !phone || !date || !time || !policyCheck) {
+                alert('Por favor completa todos los campos obligatorios y acepta las políticas.');
+                return;
+            }
+            
+            // Save booking data
+            bookingData.customerName = fullName;
+            bookingData.phone = phone;
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                // Update confirmation UI
+                document.getElementById('confirmation-service').textContent = `Servicio: ${selectedService.name}`;
+                document.getElementById('confirmation-date').textContent = `Fecha: ${bookingData.date}`;
+                document.getElementById('confirmation-time').textContent = `Hora: ${bookingData.time}`;
+                document.getElementById('confirmation-total').textContent = `$${selectedService.price} MXN`;
+                
+                // Show confirmation
+                document.getElementById('booking-form').classList.add('hidden');
+                document.getElementById('confirmation').classList.remove('hidden');
+            }, 1000);
+        }
+        
+        // Add to calendar function
+        function addToCalendar() {
+            // In a real implementation, this would generate an .ics file
+            alert('Evento agregado a tu calendario (simulación)');
+        }
+        
+        // Send WhatsApp confirmation
+        function sendWhatsAppConfirmation() {
+            const message = `Hola ${bookingData.customerName}, tu cita en Montana Barber Shop ha sido confirmada para el ${bookingData.date} a las ${bookingData.time} para el servicio ${selectedService.name}.`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/52899128124?text=${encodedMessage}`, '_blank');
+        }
+    </script>
+</body>
+</html>
