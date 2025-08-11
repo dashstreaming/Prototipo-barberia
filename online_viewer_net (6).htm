@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Barber - Reserva tu cita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f8f8;
+        }
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #D4AF37 0%, #F9D423 100%);
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .radio-card:checked + label {
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+        }
+        .time-slot:not(.disabled):hover {
+            background-color: #D4AF37;
+            color: white;
+        }
+        .progress-step.active {
+            background-color: #D4AF37;
+            color: white;
+        }
+        .progress-step.completed {
+            background-color: #D4AF37;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+    <!-- Header -->
+    <header class="bg-black text-white shadow-md">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <i class="fas fa-scissors text-2xl mr-2 text-gold-500"></i>
+                    <h1 class="title-font text-2xl font-bold">ROYAL <span class="gold-gradient bg-clip-text text-transparent">BARBER</span></h1>
+                </div>
+                <div>
+                    <a href="#" class="text-white hover:text-gray-300">
+                        <i class="fas fa-phone-alt mr-1"></i> 55 1234 5678
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-3xl">
+        <!-- Progress Steps -->
+        <div class="mb-8">
+            <div class="flex justify-between relative">
+                <div class="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -z-10"></div>
+                <div class="progress-step completed w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium relative">
+                    <span>1</span>
+                </div>
+                <div class="progress-step active w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium relative">
+                    <span>2</span>
+                </div>
+                <div class="progress-step w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium relative">
+                    <span>3</span>
+                </div>
+                <div class="progress-step w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium relative">
+                    <span>4</span>
+                </div>
+                <div class="progress-step w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium relative">
+                    <span>5</span>
+                </div>
+            </div>
+            <div class="flex justify-between mt-2 text-xs">
+                <span class="text-gray-600">Servicio</span>
+                <span class="text-gray-600">Fecha</span>
+                <span class="text-gray-600">Hora</span>
+                <span class="text-gray-600">Datos</span>
+                <span class="text-gray-600">Pago</span>
+            </div>
+        </div>
+
+        <!-- Step Content -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden fade-in">
+            <!-- Step 1: Service Selection -->
+            <div id="step-1" class="p-6">
+                <h2 class="title-font text-2xl font-bold mb-6">Selecciona tu servicio</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <input type="radio" name="service" id="service-1" class="hidden radio-card">
+                    <label for="service-1" class="border-2 border-gray-200 rounded-lg p-4 cursor-pointer transition-all hover:border-gray-300">
+                        <div class="flex items-start">
+                            <div class="mr-3">
+                                <div class="w-10 h-10 rounded-full gold-gradient flex items-center justify-center text-white">
+                                    <i class="fas fa-cut"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold">Corte Clásico</h3>
+                                <p class="text-sm text-gray-600">Incluye lavado y acabado con productos premium</p>
+                                <p class="text-lg font-bold mt-2">$250 MXN</p>
+                            </div>
+                        </div>
+                    </label>
+
+                    <input type="radio" name="service" id="service-2" class="hidden radio-card">
+                    <label for="service-2" class="border-2 border-gray-200 rounded-lg p-4 cursor-pointer transition-all hover:border-gray-300">
+                        <div class="flex items-start">
+                            <div class="mr-3">
+                                <div class="w-10 h-10 rounded-full gold-gradient flex items-center justify-center text-white">
+                                    <i class="fas fa-razor"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold">Corte + Barba</h3>
+                                <p class="text-sm text-gray-600">Corte completo más arreglo de barba con acabado</p>
+                                <p class="text-lg font-bold mt-2">$350 MXN</p>
+                            </div>
+                        </div>
+                    </label>
+
+                    <input type="radio" name="service" id="service-3" class="hidden radio-card">
+                    <label for="service-3" class="border-2 border-gray-200 rounded-lg p-4 cursor-pointer transition-all hover:border-gray-300">
+                        <div class="flex items-start">
+                            <div class="mr-3">
+                                <div class="w-10 h-10 rounded-full gold-gradient flex items-center justify-center text-white">
+                                    <i class="fas fa-spa"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold">Tratamiento Capilar</h3>
+                                <p class="text-sm text-gray-600">Hidratación profunda y masaje relajante</p>
+                                <p class="text-lg font-bold mt-2">$200 MXN</p>
+                            </div>
+                        </div>
+                    </label>
+
+                    <input type="radio" name="service" id="service-4" class="hidden radio-card">
+                    <label for="service-4" class="border-2 border-gray-200 rounded-lg p-4 cursor-pointer transition-all hover:border-gray-300">
+                        <div class="flex items-start">
+                            <div class="mr-3">
+                                <div class="w-10 h-10 rounded-full gold-gradient flex items-center justify-center text-white">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold">Experiencia Royal</h3>
+                                <p class="text-sm text-gray-600">Servicio completo con tratamiento premium</p>
+                                <p class="text-lg font-bold mt-2">$500 MXN</p>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                <button id="next-to-date" class="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
+                    Seleccionar fecha <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+
+            <!-- Step 2: Date Selection -->
+            <div id="step-2" class="p-6 hidden">
+                <h2 class="title-font text-2xl font-bold mb-6">Selecciona una fecha</h2>
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <button id="prev-month" class="text-gray-600 hover:text-black"><i class="fas fa-chevron-left"></i></button>
+                        <h3 id="current-month" class="font-bold">Junio 2023</h3>
+                        <button id="next-month" class="text-gray-600 hover:text-black"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-sm mb-2">
+                        <div class="font-medium">L</div>
+                        <div class="font-medium">M</div>
+                        <div class="font-medium">M</div>
+                        <div class="font-medium">J</div>
+                        <div class="font-medium">V</div>
+                        <div class="font-medium">S</div>
+                        <div class="font-medium">D</div>
+                    </div>
+                    <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center">
+                        <!-- Calendar days will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button id="back-to-service" class="text-gray-600 hover:text-black font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i> Regresar
+                    </button>
+                    <button id="next-to-time" class="bg-black text-white py-2 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50" disabled>
+                        Seleccionar hora <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Time Selection -->
+            <div id="step-3" class="p-6 hidden">
+                <h2 class="title-font text-2xl font-bold mb-6">Selecciona una hora</h2>
+                <div class="mb-4">
+                    <p id="selected-date-display" class="text-gray-600 mb-4">Martes, 15 de Junio</p>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">9:00 AM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">9:30 AM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">10:00 AM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">10:30 AM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">11:00 AM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">11:30 AM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">12:00 PM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">12:30 PM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">1:00 PM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">4:00 PM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">4:30 PM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">5:00 PM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">5:30 PM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">6:00 PM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">6:30 PM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">7:00 PM</button>
+                        <button class="time-slot py-2 rounded-lg border border-gray-200 font-medium">7:30 PM</button>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button id="back-to-date" class="text-gray-600 hover:text-black font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i> Regresar
+                    </button>
+                    <button id="next-to-info" class="bg-black text-white py-2 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50" disabled>
+                        Continuar <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Personal Info -->
+            <div id="step-4" class="p-6 hidden">
+                <h2 class="title-font text-2xl font-bold mb-6">Tus datos</h2>
+                <div class="mb-4">
+                    <div class="mb-4">
+                        <label for="full-name" class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+                        <input type="text" id="full-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+                    </div>
+                    <div class="mb-4">
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Número de celular</label>
+                        <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+                    </div>
+                    <div class="mb-4">
+                        <div class="flex items-start">
+                            <input type="checkbox" id="accept-terms" class="mt-1">
+                            <label for="accept-terms" class="ml-2 text-sm text-gray-700">
+                                Acepto las políticas de cancelación (50% de cargo por cancelación con menos de 24 horas de anticipación)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                    <h3 class="font-bold mb-2">Resumen de tu reserva</h3>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-600">Servicio:</span>
+                        <span id="service-summary" class="font-medium">Corte Clásico</span>
+                    </div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-600">Fecha:</span>
+                        <span id="date-summary" class="font-medium">15 Junio, 2023</span>
+                    </div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-600">Hora:</span>
+                        <span id="time-summary" class="font-medium">10:00 AM</span>
+                    </div>
+                    <div class="border-t border-gray-200 mt-2 pt-2">
+                        <div class="flex justify-between font-bold">
+                            <span>Anticipo:</span>
+                            <span>$50 MXN</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between">
+                    <button id="back-to-time" class="text-gray-600 hover:text-black font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i> Regresar
+                    </button>
+                    <button id="next-to-payment" class="bg-black text-white py-2 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50" disabled>
+                        Pagar ahora <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: Payment -->
+            <div id="step-5" class="p-6 hidden">
+                <h2 class="title-font text-2xl font-bold mb-6">Pago seguro</h2>
+                <div class="mb-6">
+                    <p class="text-gray-600 mb-4">Estás a punto de pagar el anticipo de <span class="font-bold">$50 MXN</span> para confirmar tu cita.</p>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-10 h-10 rounded-full gold-gradient flex items-center justify-center text-white mr-3">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold">Pago seguro</h3>
+                                <p class="text-sm text-gray-600">Tus datos están protegidos</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label for="card-number" class="block text-sm font-medium text-gray-700 mb-1">Número de tarjeta</label>
+                                <div class="relative">
+                                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+                                    <div class="absolute right-3 top-2">
+                                        <i class="fab fa-cc-visa text-gray-400 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="card-expiry" class="block text-sm font-medium text-gray-700 mb-1">Vencimiento</label>
+                                    <input type="text" id="card-expiry" placeholder="MM/AA" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+                                </div>
+                                <div>
+                                    <label for="card-cvc" class="block text-sm font-medium text-gray-700 mb-1">CVC</label>
+                                    <input type="text" id="card-cvc" placeholder="123" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="card-name" class="block text-sm font-medium text-gray-700 mb-1">Nombre en la tarjeta</label>
+                                <input type="text" id="card-name" placeholder="Nombre como aparece en la tarjeta" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center mb-4">
+                        <input type="checkbox" id="save-card" class="mr-2">
+                        <label for="save-card" class="text-sm text-gray-700">Guardar tarjeta para futuras reservas</label>
+                    </div>
+                </div>
+                <div class="flex justify-between">
+                    <button id="back-to-info" class="text-gray-600 hover:text-black font-medium">
+                        <i class="fas fa-arrow-left mr-2"></i> Regresar
+                    </button>
+                    <button id="confirm-payment" class="gold-gradient text-black py-2 px-6 rounded-lg font-bold hover:opacity-90 transition-opacity">
+                        Confirmar pago <i class="fas fa-check ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 6: Confirmation -->
+            <div id="step-6" class="p-6 hidden text-center">
+                <div class="mb-6">
+                    <div class="w-20 h-20 gold-gradient rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check text-white text-3xl"></i>
+                    </div>
+                    <h2 class="title-font text-2xl font-bold mb-2">¡Reserva confirmada!</h2>
+                    <p class="text-gray-600 mb-4">Hemos enviado los detalles a tu WhatsApp</p>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg mb-6 max-w-md mx-auto">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600">Código:</span>
+                            <span class="font-mono font-bold">#RB-2023-0623</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600">Servicio:</span>
+                            <span id="conf-service" class="font-medium">Corte Clásico</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600">Fecha:</span>
+                            <span id="conf-date" class="font-medium">15 Junio, 2023</span>
+                        </div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-600">Hora:</span>
+                            <span id="conf-time" class="font-medium">10:00 AM</span>
+                        </div>
+                        <div class="border-t border-gray-200 mt-2 pt-2">
+                            <div class="flex justify-between font-bold">
+                                <span>Anticipo:</span>
+                                <span>$50 MXN</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col space-y-3 max-w-md mx-auto">
+                        <a href="#" class="bg-green-600 text-white py-3 rounded-lg font-medium flex items-center justify-center hover:bg-green-700 transition-colors">
+                            <i class="fab fa-whatsapp mr-2 text-xl"></i> Abrir WhatsApp
+                        </a>
+                        <a href="#" class="bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
+                            Ver mis reservas
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-black font-medium">
+                            Volver al inicio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="title-font text-xl font-bold mb-4">ROYAL <span class="gold-gradient bg-clip-text text-transparent">BARBER</span></h3>
+                    <p class="text-gray-400">La excelencia en el arte de la barbería desde 2010.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Horario</h4>
+                    <p class="text-gray-400 mb-1">Lunes a Viernes: 9AM - 8PM</p>
+                    <p class="text-gray-400">Sábado: 10AM - 6PM</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Contacto</h4>
+                    <p class="text-gray-400 mb-1"><i class="fas fa-map-marker-alt mr-2"></i> Av. Reforma 123, CDMX</p>
+                    <p class="text-gray-400"><i class="fas fa-phone-alt mr-2"></i> 55 1234 5678</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2023 Royal Barber. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation between steps
+        document.getElementById('next-to-date').addEventListener('click', function() {
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+            updateProgress(2);
+        });
+
+        document.getElementById('back-to-service').addEventListener('click', function() {
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-1').classList.remove('hidden');
+            updateProgress(1);
+        });
+
+        document.getElementById('next-to-time').addEventListener('click', function() {
+            document.getElementById('step-2').classList.add('hidden');
+            document.getElementById('step-3').classList.remove('hidden');
+            updateProgress(3);
+        });
+
+        document.getElementById('back-to-date').addEventListener('click', function() {
+            document.getElementById('step-3').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
+            updateProgress(2);
+        });
+
+        document.getElementById('next-to-info').addEventListener('click', function() {
+            document.getElementById('step-3').classList.add('hidden');
+            document.getElementById('step-4').classList.remove('hidden');
+            updateProgress(4);
+        });
+
+        document.getElementById('back-to-time').addEventListener('click', function() {
+            document.getElementById('step-4').classList.add('hidden');
+            document.getElementById('step-3').classList.remove('hidden');
+            updateProgress(3);
+        });
+
+        document.getElementById('next-to-payment').addEventListener('click', function() {
+            document.getElementById('step-4').classList.add('hidden');
+            document.getElementById('step-5').classList.remove('hidden');
+            updateProgress(5);
+        });
+
+        document.getElementById('back-to-info').addEventListener('click', function() {
+            document.getElementById('step-5').classList.add('hidden');
+            document.getElementById('step-4').classList.remove('hidden');
+            updateProgress(4);
+        });
+
+        document.getElementById('confirm-payment').addEventListener('click', function() {
+            document.getElementById('step-5').classList.add('hidden');
+            document.getElementById('step-6').classList.remove('hidden');
+            updateProgress(6);
+        });
+
+        // Update progress steps
+        function updateProgress(currentStep) {
+            const steps = document.querySelectorAll('.progress-step');
+            
+            steps.forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                
+                if (index + 1 < currentStep) {
+                    step.classList.add('completed');
+                } else if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+        }
+
+        // Calendar functionality
+        function generateCalendar() {
+            const calendarDays = document.getElementById('calendar-days');
+            calendarDays.innerHTML = '';
+            
+            const date = new Date();
+            const currentMonth = date.getMonth();
+            const currentYear = date.getFullYear();
+            
+            document.getElementById('current-month').textContent = 
+                new Date(currentYear, currentMonth).toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+            
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.classList.add('text-gray-300');
+                emptyCell.textContent = new Date(currentYear, currentMonth, -i).getDate();
+                calendarDays.appendChild(emptyCell);
+            }
+            
+            // Add days of the month
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayCell = document.createElement('button');
+                dayCell.classList.add('py-1', 'rounded-full', 'hover:bg-gray-100');
+                
+                // Disable past days
+                const today = new Date();
+                const cellDate = new Date(currentYear, currentMonth, i);
+                
+                if (cellDate < today) {
+                    dayCell.classList.add('text-gray-300');
+                    dayCell.disabled = true;
+                } else {
+                    dayCell.classList.add('hover:bg-gray-100');
+                }
+                
+                // Highlight today
+                if (i === date.getDate() && currentMonth === date.getMonth() && currentYear === date.getFullYear()) {
+                    dayCell.classList.add('bg-black', 'text-white');
+                }
+                
+                dayCell.textContent = i;
+                calendarDays.appendChild(dayCell);
+                
+                // Add click event
+                dayCell.addEventListener('click', function() {
+                    // Remove active class from all days
+                    document.querySelectorAll('#calendar-days button').forEach(btn => {
+                        btn.classList.remove('bg-black', 'text-white');
+                    });
+                    
+                    // Add active class to clicked day
+                    this.classList.add('bg-black', 'text-white');
+                    
+                    // Enable next button
+                    document.getElementById('next-to-time').disabled = false;
+                    
+                    // Update selected date display
+                    const selectedDate = new Date(currentYear, currentMonth, i);
+                    document.getElementById('selected-date-display').textContent = 
+                        selectedDate.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' });
+                    
+                    // Update summary
+                    document.getElementById('date-summary').textContent = 
+                        selectedDate.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+                    document.getElementById('conf-date').textContent = 
+                        selectedDate.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+                });
+            }
+        }
+
+        // Time slot selection
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.addEventListener('click', function() {
+                // Remove active class from all slots
+                document.querySelectorAll('.time-slot').forEach(s => {
+                    s.classList.remove('bg-black', 'text-white');
+                });
+                
+                // Add active class to clicked slot
+                this.classList.add('bg-black', 'text-white');
+                
+                // Enable next button
+                document.getElementById('next-to-info').disabled = false;
+                
+                // Update summary
+                const time = this.textContent;
+                document.getElementById('time-summary').textContent = time;
+                document.getElementById('conf-time').textContent = time;
+            });
+        });
+
+        // Service selection
+        document.querySelectorAll('input[name="service"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    // Update summary
+                    const serviceName = this.nextElementSibling.querySelector('h3').textContent;
+                    document.getElementById('service-summary').textContent = serviceName;
+                    document.getElementById('conf-service').textContent = serviceName;
+                }
+            });
+        });
+
+        // Form validation for step 4
+        document.getElementById('full-name').addEventListener('input', validateStep4);
+        document.getElementById('phone').addEventListener('input', validateStep4);
+        document.getElementById('accept-terms').addEventListener('change', validateStep4);
+
+        function validateStep4() {
+            const nameValid = document.getElementById('full-name').value.trim().length > 0;
+            const phoneValid = document.getElementById('phone').value.trim().length >= 10;
+            const termsChecked = document.getElementById('accept-terms').checked;
+            
+            document.getElementById('next-to-payment').disabled = !(nameValid && phoneValid && termsChecked);
+        }
+
+        // Initialize calendar
+        generateCalendar();
+    </script>
+</body>
+</html>
