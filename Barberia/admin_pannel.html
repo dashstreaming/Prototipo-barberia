@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Montana Barber Shop - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .sidebar {
+            transition: all 0.3s;
+        }
+        .sidebar-collapsed {
+            width: 80px;
+        }
+        .sidebar-collapsed .nav-text {
+            display: none;
+        }
+        .sidebar-collapsed .logo-text {
+            display: none;
+        }
+        .sidebar-collapsed .menu-toggle {
+            justify-content: center;
+        }
+        .toast {
+            animation: slideIn 0.5s forwards, fadeOut 0.5s 3s forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .fc-daygrid-event {
+            white-space: normal !important;
+            word-wrap: break-word !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-slate-800 rounded-lg w-full max-w-md mx-4 border border-slate-700">
+        <div class="p-6">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-amber-500 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-cut text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold">Montana Barber Shop</h2>
+                <p class="text-slate-400">Panel de Administración</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Usuario</label>
+                    <input type="text" id="username" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 w-full" placeholder="admin" required>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Contraseña</label>
+                    <input type="password" id="password" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 w-full" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 rounded-lg font-medium transition-colors">
+                    Iniciar Sesión
+                </button>
+            </form>
+            
+            <div id="login-error" class="mt-4 text-red-400 text-sm text-center hidden"></div>
+        </div>
+    </div>
+</div>
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="sidebar bg-slate-900 text-white w-64 flex-shrink-0 flex flex-col border-r border-slate-700">
+            <div class="p-4 flex items-center justify-between border-b border-slate-700">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center">
+                        <i class="fas fa-cut text-xl"></i>
+                    </div>
+                    <span class="logo-text ml-3 text-xl font-bold">Montana Barber</span>
+                </div>
+                <button class="menu-toggle text-slate-400 hover:text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="flex-1 overflow-y-auto py-4">
+                <ul>
+                    <li>
+                        <a href="#dashboard" class="nav-item flex items-center px-4 py-3 text-white bg-amber-500/20 border-r-4 border-amber-500">
+                            <i class="fas fa-home"></i>
+                            <span class="nav-text ml-3">Inicio</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#appointments" class="nav-item flex items-center px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span class="nav-text ml-3">Citas</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#services" class="nav-item flex items-center px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800">
+                            <i class="fas fa-cut"></i>
+                            <span class="nav-text ml-3">Servicios</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#settings" class="nav-item flex items-center px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800">
+                            <i class="fas fa-cog"></i>
+                            <span class="nav-text ml-3">Configuración</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="p-4 border-t border-slate-700">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="ml-3">
+                        <div class="text-sm font-medium">Admin</div>
+                        <div class="text-xs text-slate-400">Barbero</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 min-w-0 overflow-auto">
+            <!-- Top Bar -->
+            <header class="bg-slate-800 border-b border-slate-700 p-4 flex justify-between items-center">
+                <h1 class="text-xl font-semibold" id="page-title">Dashboard</h1>
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-slate-700">
+                        <i class="fas fa-bell text-slate-300"></i>
+                    </button>
+                    <div class="w-px h-6 bg-slate-600"></div>
+                    <div class="flex items-center">
+                        <span class="text-sm mr-2 hidden md:inline">Admin</span>
+                        <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center">
+                            <i class="fas fa-user text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="p-4">
+                <!-- Dashboard Section -->
+                <section id="dashboard-content" class="page-content">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-400 text-sm">Citas hoy</p>
+                                    <h3 class="text-2xl font-bold mt-1">8</h3>
+                                </div>
+                                <div class="p-2 rounded-full bg-amber-500/20 text-amber-500">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-slate-700">
+                                <p class="text-sm text-slate-400">Completadas: <span class="text-white">5</span></p>
+                                <p class="text-sm text-slate-400">Pendientes: <span class="text-white">3</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-400 text-sm">Citas esta semana</p>
+                                    <h3 class="text-2xl font-bold mt-1">24</h3>
+                                </div>
+                                <div class="p-2 rounded-full bg-blue-500/20 text-blue-500">
+                                    <i class="fas fa-calendar-week"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-slate-700">
+                                <p class="text-sm text-slate-400">Completadas: <span class="text-white">18</span></p>
+                                <p class="text-sm text-slate-400">Pendientes: <span class="text-white">6</span></p>
+                            </div>
+                        </div>
+                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="text-slate-400 text-sm">Citas este mes</p>
+                                    <h3 class="text-2xl font-bold mt-1">96</h3>
+                                </div>
+                                <div class="p-2 rounded-full bg-purple-500/20 text-purple-500">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-slate-700">
+                                <p class="text-sm text-slate-400">Completadas: <span class="text-white">82</span></p>
+                                <p class="text-sm text-slate-400">Canceladas: <span class="text-white">5</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 rounded-lg p-4 border border-slate-700 mb-6">
+                        <h2 class="text-lg font-semibold mb-4">Próximas citas</h2>
+                        <div class="overflow-x-auto max-w-full">
+
+                            <table class="min-w-full divide-y divide-slate-700">
+                                <thead>
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Cliente</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Servicio</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Hora</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Teléfono</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-700">
+                                    <tr>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Juan Pérez</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Corte clásico</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">10:00 AM</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">555-123-4567</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;"><span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Carlos López</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Afeitado</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">11:30 AM</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">555-987-6543</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;"><span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Miguel Ángel</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Corte + Barba</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">1:00 PM</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">555-456-7890</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;"><span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Roberto Díaz</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Corte moderno</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">2:30 PM</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">555-789-0123</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;"><span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Luis Méndez</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Corte clásico</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">4:00 PM</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">555-234-5678</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;"><span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+               <!-- Appointments Section -->
+                <section id="appointments-content" class="page-content hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-semibold">Gestión de Citas</h2>
+                        <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg flex items-center" id="new-appointment-btn">
+                            <i class="fas fa-plus mr-2"></i> Nueva Cita
+                        </button>
+                    </div>
+
+                    <!-- Vista de Calendario -->
+                    <div class="bg-slate-800 rounded-lg p-4 border border-slate-700 mb-6">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                            <div class="flex space-x-2 mb-2 md:mb-0">
+                                <button id="calendar-view" class="px-3 py-1 bg-amber-500 text-white rounded-lg text-sm">Calendario</button>
+                                <button id="list-view" class="px-3 py-1 bg-slate-700 rounded-lg text-sm">Lista</button>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="relative">
+                                    <input type="date" id="filter-date" class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
+                                </div>
+                                <select id="filter-service" class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
+                                    <option value="">Todos los servicios</option>
+                                </select>
+                                <select id="filter-status" class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
+                                    <option value="">Todos los estados</option>
+                                    <option value="pending">Pendiente</option>
+                                    <option value="completed">Completada</option>
+                                    <option value="cancelled">Cancelada</option>
+                                    <option value="no-show">No-show</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Calendario Visual -->
+						<div id="calendar-container" class="grid grid-rows-[auto,1fr] min-h-[28rem] bg-slate-900 rounded-lg p-2">
+							<div class="grid grid-cols-7 gap-1">
+								<!-- Header del calendario -->
+								<div class="bg-slate-700 p-2 text-center text-sm font-medium text-slate-300 rounded h-8">Dom</div>
+								<div class="bg-slate-700 p-2 text-center text-sm font-medium text-slate-300 rounded h-8">Lun</div>
+								<div class="bg-slate-700 p-2 text-center text-sm font-medium text-slate-300 rounded h-8">Mar</div>
+								<div class="bg-slate-700 p-2 text-center text-sm font-medium text-slate-300 rounded h-8">Mié</div>
+								<div class="bg-slate-700 p-2 text-center text-sm font-medium text-slate-300 rounded h-8">Jue</div>
+								<div class="bg-slate-700 p-2 text-center text-sm font-medium text-slate-300 rounded h-8">Vie</div>
+								<div class="bg-slate-700 p-2 text-center text-sm font-medium text-slate-300 rounded h-8">Sáb</div>
+								
+								<!-- Días del mes se llenan dinámicamente -->
+							</div>
+							<div id="calendar-days" class="grid grid-cols-7 gap-1 mt-2 auto-rows-[80px] overflow-auto">
+								<!-- Se llena con JavaScript -->
+							</div>
+						</div>
+                        </div>
+
+                        <!-- Controles del calendario -->
+                        <div class="flex justify-between items-center mt-4">
+                            <button id="prev-month" class="bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-sm">
+                                <i class="fas fa-chevron-left mr-1"></i> Anterior
+                            </button>
+                            <h3 id="current-month" class="text-lg font-semibold"></h3>
+                            <button id="next-month" class="bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-sm">
+                                Siguiente <i class="fas fa-chevron-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lista de Citas -->
+                    <div id="appointments-list" class="bg-slate-800 rounded-lg p-4 border border-slate-700 hidden">
+                        <h3 class="text-lg font-semibold mb-4">Lista de Citas</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full table-fixed divide-y divide-slate-700">
+                                <thead>
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Fecha</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Cliente</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Servicio</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Hora</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Estado</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-700">
+                                    <!-- Se llena dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Services Section -->
+                <section id="services-content" class="page-content hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-lg font-semibold">Servicios</h2>
+                        <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg flex items-center" id="new-service-btn">
+                            <i class="fas fa-plus mr-2"></i> Nuevo Servicio
+                        </button>
+                    </div>
+
+                    <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-700">
+                                <thead>
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Nombre</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Precio</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Duración</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Estado</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-700">
+                                    <tr>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Corte clásico</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">$200 MXN</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">30 min</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-500">Activo</span></td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">
+                                            <div class="flex space-x-2">
+                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
+                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Afeitado</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">$150 MXN</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">20 min</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-500">Activo</span></td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">
+                                            <div class="flex space-x-2">
+                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
+                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Corte + Barba</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">$300 MXN</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">45 min</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-500">Activo</span></td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">
+                                            <div class="flex space-x-2">
+                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
+                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Corte moderno</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">$250 MXN</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">35 min</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-500">Activo</span></td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">
+                                            <div class="flex space-x-2">
+                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
+                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">Tinte de cabello</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">$400 MXN</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">60 min</td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;"><span class="px-2 py-1 text-xs rounded-full bg-gray-500/20 text-gray-500">Inactivo</span></td>
+                                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">
+                                            <div class="flex space-x-2">
+                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
+                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <!-- Settings Section -->
+                <section id="settings-content" class="page-content hidden max-h-[calc(100vh-8rem)] overflow-auto">
+                    <h2 class="text-lg font-semibold mb-6">Configuración</h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 min-w-0">
+                        <!-- Business Hours -->
+                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                            <h3 class="text-md font-semibold mb-4">Horario Laboral</h3>
+                            
+                            <div class="space-y-4" id="business-hours-container">
+                                <div class="flex items-center justify-between">
+                                    <span>Domingo</span>
+                                    <div class="flex items-center space-x-2">
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer day-toggle" data-day="0">
+                                            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                                            <span class="ml-2 text-sm">Abierto</span>
+                                        </label>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-start" data-day="0" disabled>
+                                            <option value="09:00">9:00 AM</option>
+                                            <option value="10:00">10:00 AM</option>
+                                            <option value="11:00">11:00 AM</option>
+                                        </select>
+                                        <span class="text-sm">a</span>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-end" data-day="0" disabled>
+                                            <option value="17:00">5:00 PM</option>
+                                            <option value="18:00">6:00 PM</option>
+                                            <option value="19:00">7:00 PM</option>
+                                            <option value="20:00">8:00 PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span>Lunes</span>
+                                    <div class="flex items-center space-x-2">
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer day-toggle" data-day="1" checked>
+                                            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                                            <span class="ml-2 text-sm">Abierto</span>
+                                        </label>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-start" data-day="1">
+                                            <option value="09:00" selected>9:00 AM</option>
+                                            <option value="10:00">10:00 AM</option>
+                                            <option value="11:00">11:00 AM</option>
+                                        </select>
+                                        <span class="text-sm">a</span>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-end" data-day="1">
+                                            <option value="17:00">5:00 PM</option>
+                                            <option value="18:00">6:00 PM</option>
+                                            <option value="19:00" selected>7:00 PM</option>
+                                            <option value="20:00">8:00 PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span>Martes</span>
+                                    <div class="flex items-center space-x-2">
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer day-toggle" data-day="2" checked>
+                                            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                                            <span class="ml-2 text-sm">Abierto</span>
+                                        </label>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-start" data-day="2">
+                                            <option value="09:00" selected>9:00 AM</option>
+                                            <option value="10:00">10:00 AM</option>
+                                            <option value="11:00">11:00 AM</option>
+                                        </select>
+                                        <span class="text-sm">a</span>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-end" data-day="2">
+                                            <option value="17:00">5:00 PM</option>
+                                            <option value="18:00">6:00 PM</option>
+                                            <option value="19:00" selected>7:00 PM</option>
+                                            <option value="20:00">8:00 PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span>Miércoles</span>
+                                    <div class="flex items-center space-x-2">
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer day-toggle" data-day="3" checked>
+                                            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                                            <span class="ml-2 text-sm">Abierto</span>
+                                        </label>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-start" data-day="3">
+                                            <option value="09:00" selected>9:00 AM</option>
+                                            <option value="10:00">10:00 AM</option>
+                                            <option value="11:00">11:00 AM</option>
+                                        </select>
+                                        <span class="text-sm">a</span>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-end" data-day="3">
+                                            <option value="17:00">5:00 PM</option>
+                                            <option value="18:00">6:00 PM</option>
+                                            <option value="19:00" selected>7:00 PM</option>
+                                            <option value="20:00">8:00 PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span>Jueves</span>
+                                    <div class="flex items-center space-x-2">
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer day-toggle" data-day="4" checked>
+                                            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                                            <span class="ml-2 text-sm">Abierto</span>
+                                        </label>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-start" data-day="4">
+                                            <option value="09:00" selected>9:00 AM</option>
+                                            <option value="10:00">10:00 AM</option>
+                                            <option value="11:00">11:00 AM</option>
+                                        </select>
+                                        <span class="text-sm">a</span>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-end" data-day="4">
+                                            <option value="17:00">5:00 PM</option>
+                                            <option value="18:00">6:00 PM</option>
+                                            <option value="19:00" selected>7:00 PM</option>
+                                            <option value="20:00">8:00 PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span>Viernes</span>
+                                    <div class="flex items-center space-x-2">
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer day-toggle" data-day="5" checked>
+                                            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                                            <span class="ml-2 text-sm">Abierto</span>
+                                        </label>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-start" data-day="5">
+                                            <option value="09:00" selected>9:00 AM</option>
+                                            <option value="10:00">10:00 AM</option>
+                                            <option value="11:00">11:00 AM</option>
+                                        </select>
+                                        <span class="text-sm">a</span>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-end" data-day="5">
+                                            <option value="17:00">5:00 PM</option>
+                                            <option value="18:00">6:00 PM</option>
+                                            <option value="19:00" selected>7:00 PM</option>
+                                            <option value="20:00">8:00 PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <span>Sábado</span>
+                                    <div class="flex items-center space-x-2">
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer day-toggle" data-day="6" checked>
+                                            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                                            <span class="ml-2 text-sm">Abierto</span>
+                                        </label>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-start" data-day="6">
+                                            <option value="09:00" selected>9:00 AM</option>
+                                            <option value="10:00">10:00 AM</option>
+                                            <option value="11:00">11:00 AM</option>
+                                        </select>
+                                        <span class="text-sm">a</span>
+                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-2 py-1 text-sm day-end" data-day="6">
+                                            <option value="15:00">3:00 PM</option>
+                                            <option value="16:00">4:00 PM</option>
+                                            <option value="17:00" selected>5:00 PM</option>
+                                            <option value="18:00">6:00 PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 pt-4 border-t border-slate-700">
+                                <h4 class="text-sm font-semibold mb-2">Días de cierre especiales</h4>
+                                <div id="closed-days-container" class="space-y-2 mb-3">
+                                    <!-- Se llenan dinámicamente -->
+                                </div>
+                                <button id="add-closed-day" class="text-amber-500 hover:text-amber-400 text-sm flex items-center">
+                                    <i class="fas fa-plus mr-1"></i> Añadir día de cierre
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- WhatsApp Integration -->
+                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                            <h3 class="text-md font-semibold mb-4">Integración WhatsApp</h3>
+                            
+                            <div class="text-center py-6">
+                                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fab fa-whatsapp text-2xl text-white"></i>
+                                </div>
+                                <h4 class="text-lg font-medium mb-2">Mensajes Automáticos</h4>
+                                <p class="text-slate-400 text-sm mb-4">Conecta tu WhatsApp Business para enviar confirmaciones y recordatorios automáticos</p>
+                                
+                                <button class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium flex items-center mx-auto mb-3">
+                                    <i class="fab fa-whatsapp mr-2"></i> Iniciar sesión con WhatsApp
+                                </button>
+                                
+                                <div class="text-xs text-slate-500">
+                                    <i class="fas fa-shield-alt mr-1"></i> Conexión segura con WhatsApp Business API
+                                </div>
+                            </div>
+                            
+                            <div class="border-t border-slate-700 pt-4">
+                                <h5 class="font-medium mb-2">Funcionalidades incluidas:</h5>
+                                <ul class="text-sm text-slate-400 space-y-1">
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i> Confirmación automática de citas</li>
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i> Recordatorios 24h y 3h antes</li>
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i> Notificaciones de cambios</li>
+                                    <li><i class="fas fa-check text-green-500 mr-2"></i> Mensajes personalizables</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Deposit Settings -->
+                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                            <h3 class="text-md font-semibold mb-4">Configuración de Anticipo</h3>
+                            
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-slate-300 mb-1">Monto del anticipo</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">$</span>
+                                    <input type="number" id="deposit-amount" class="bg-slate-700 border border-slate-600 rounded-lg pl-8 pr-4 py-2 w-full" value="50">
+                                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">MXN</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-slate-300 mb-1">Política de anticipos</label>
+                                <textarea id="deposit-policy" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full h-32">Con +24 h de anticipación: el anticipo queda como saldo a favor por 30 días.
+Con -24 h o no-show: el anticipo se pierde.</textarea>
+                            </div>
+                        </div>
+
+                        <!-- Booking Rules -->
+                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                            <h3 class="text-md font-semibold mb-4">Reglas de Agenda</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-1">Tiempo mínimo de anticipación</label>
+                                    <select id="min-advance" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
+                                        <option>30 minutos</option>
+                                        <option selected>1 hora</option>
+                                        <option>2 horas</option>
+                                        <option>6 horas</option>
+                                        <option>12 horas</option>
+                                        <option>24 horas</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-1">Límite máximo para reservar</label>
+                                    <select id="max-advance" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
+                                        <option>3 días</option>
+                                        <option>5 días</option>
+                                        <option selected>7 días</option>
+                                        <option>14 días</option>
+                                        <option>30 días</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-1">Intervalo de agenda</label>
+                                    <select id="slot-interval" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
+                                        <option>15 minutos</option>
+                                        <option selected>30 minutos</option>
+                                        <option>45 minutos</option>
+                                        <option>1 hora</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reminders -->
+                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
+                            <h3 class="text-md font-semibold mb-4">Recordatorios</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="text-sm font-medium text-slate-300">Recordatorio 24 horas antes</h4>
+                                        <p class="text-xs text-slate-400">Enviar un recordatorio 24 horas antes de la cita</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="reminder-24h" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                                    </label>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="text-sm font-medium text-slate-300">Recordatorio 3 horas antes</h4>
+                                        <p class="text-xs text-slate-400">Enviar un recordatorio 3 horas antes de la cita</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="reminder-3h" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                                    </label>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-1">Mensaje de confirmación</label>
+                                    <textarea id="confirmation-message" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full h-24">Hola {{nombre}}, tu cita para {{servicio}} está confirmada para el {{fecha}} a las {{hora}}. ¡Te esperamos!</textarea>
+                                    <p class="text-xs text-slate-400 mt-1">Variables disponibles: {{nombre}}, {{fecha}}, {{hora}}, {{servicio}}</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-300 mb-1">Mensaje de recordatorio</label>
+                                    <textarea id="reminder-message" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full h-24">Hola {{nombre}}, recuerda que tienes cita para {{servicio}} mañana a las {{hora}}. ¡Te esperamos!</textarea>
+                                    <p class="text-xs text-slate-400 mt-1">Variables disponibles: {{nombre}}, {{fecha}}, {{hora}}, {{servicio}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex justify-end">
+                        <button id="save-settings" class="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg">
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </section>
+    <!-- New Appointment Modal -->
+    <div id="new-appointment-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 rounded-lg w-full max-w-md mx-4 border border-slate-700">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Nueva Cita</h3>
+                <button class="text-slate-400 hover:text-white" id="close-appointment-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Servicio</label>
+                        <select id="appointment-service" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
+                            <option>Corte clásico</option>
+                            <option>Afeitado</option>
+                            <option>Corte + Barba</option>
+                            <option>Corte moderno</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Fecha</label>
+                        <input type="date" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Hora</label>
+                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
+                            <option>9:00 AM</option>
+                            <option>9:30 AM</option>
+                            <option>10:00 AM</option>
+                            <option>10:30 AM</option>
+                            <option>11:00 AM</option>
+                            <option>11:30 AM</option>
+                            <option>12:00 PM</option>
+                            <option>12:30 PM</option>
+                            <option>1:00 PM</option>
+                            <option>1:30 PM</option>
+                            <option>2:00 PM</option>
+                            <option>2:30 PM</option>
+                            <option>3:00 PM</option>
+                            <option>3:30 PM</option>
+                            <option>4:00 PM</option>
+                            <option>4:30 PM</option>
+                            <option>5:00 PM</option>
+                            <option>5:30 PM</option>
+                            <option>6:00 PM</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Nombre del cliente</label>
+                        <input type="text" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full" placeholder="Nombre completo">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Teléfono</label>
+                        <input type="tel" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full" placeholder="555-123-4567">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Anticipo</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">$</span>
+                            <input type="number" class="bg-slate-700 border border-slate-600 rounded-lg pl-8 pr-4 py-2 w-full" value="50">
+                            <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">MXN</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-700 flex justify-end space-x-3">
+                <button class="px-4 py-2 border border-slate-600 rounded-lg hover:bg-slate-700" id="cancel-appointment-modal">
+                    Cancelar
+                </button>
+                <button class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg">
+                    Guardar Cita
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Service Modal -->
+    <div id="new-service-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 rounded-lg w-full max-w-md mx-4 border border-slate-700">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Nuevo Servicio</h3>
+                <button class="text-slate-400 hover:text-white" id="close-service-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Nombre</label>
+                        <input type="text" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full" placeholder="Ej. Corte clásico">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Precio</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">$</span>
+                            <input type="number" class="bg-slate-700 border border-slate-600 rounded-lg pl-8 pr-4 py-2 w-full" placeholder="200">
+                            <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">MXN</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-1">Duración</label>
+                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
+                            <option>15 minutos</option>
+                            <option>20 minutos</option>
+                            <option selected>30 minutos</option>
+                            <option>45 minutos</option>
+                            <option>60 minutos</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-slate-300">Estado</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                            <span class="ml-3 text-sm font-medium text-slate-300">Activo</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-700 flex justify-end space-x-3">
+                <button class="px-4 py-2 border border-slate-600 rounded-lg hover:bg-slate-700" id="cancel-service-modal">
+                    Cancelar
+                </button>
+                <button class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg">
+                    Guardar Servicio
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-slate-800 rounded-lg w-full max-w-md mx-4 border border-slate-700">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                <h3 class="text-lg font-semibold" id="confirmation-title">Confirmar acción</h3>
+                <button class="text-slate-400 hover:text-white" id="close-confirmation-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <p id="confirmation-message">¿Estás seguro de que deseas realizar esta acción?</p>
+                
+                <div id="deposit-options" class="mt-4 hidden">
+                    <h4 class="text-sm font-medium text-slate-300 mb-2">¿Qué hacer con el anticipo?</h4>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <input type="radio" id="keep-deposit" name="deposit-action" class="mr-2" checked>
+                            <label for="keep-deposit" class="text-sm">Conservar como saldo a favor del cliente</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="radio" id="lose-deposit" name="deposit-action" class="mr-2">
+                            <label for="lose-deposit" class="text-sm">Marcar como perdido (política de cancelación)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-700 flex justify-end space-x-3">
+                <button class="px-4 py-2 border border-slate-600 rounded-lg hover:bg-slate-700" id="cancel-confirmation-modal">
+                    Cancelar
+                </button>
+                <button class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg" id="confirm-action">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-slate-800 border border-slate-700 rounded-lg p-4 shadow-lg z-50 hidden">
+        <div class="flex items-center">
+            <div id="toast-icon" class="mr-3"></div>
+            <div>
+                <h4 id="toast-title" class="font-medium"></h4>
+                <p id="toast-message" class="text-sm text-slate-300"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let currentUser = null;
+        let currentAppointments = [];
+        let currentServices = [];
+        let editingAppointment = null;
+        let editingService = null;
+        let currentDate = new Date();
+        let calendarAppointments = {};
+        let currentSettings = {};
+
+        // Verificar autenticación al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            setupEventListeners();
+        });
+
+        // Función para verificar autenticación
+        async function checkAuthentication() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/check-auth`);
+                const result = await response.json();
+                
+                if (result.authenticated) {
+                    currentUser = { username: result.username };
+                    document.getElementById('login-modal').classList.add('hidden');
+                    initializeAdmin();
+                } else {
+                    document.getElementById('login-modal').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error checking authentication:', error);
+                document.getElementById('login-modal').classList.remove('hidden');
+            }
+        }
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Login form
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+            
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update active nav item
+                    document.querySelectorAll('.nav-item').forEach(nav => {
+                        nav.classList.remove('bg-amber-500/20', 'border-r-4', 'border-amber-500', 'text-white');
+                        nav.classList.add('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
+                    });
+                    this.classList.add('bg-amber-500/20', 'border-r-4', 'border-amber-500', 'text-white');
+                    this.classList.remove('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
+                    
+                    // Show corresponding content
+                    const target = this.getAttribute('href').substring(1);
+                    document.querySelectorAll('.page-content').forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.getElementById(`${target}-content`).classList.remove('hidden');
+                    
+                    // Update page title
+                    document.getElementById('page-title').textContent = this.querySelector('.nav-text').textContent;
+                    
+                    // Load data for specific sections
+                    loadSectionData(target);
+                });
+            });
+
+            // Toggle sidebar
+            document.querySelector('.menu-toggle').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.toggle('sidebar-collapsed');
+            });
+
+            // Modal event listeners
+            setupModalListeners();
+
+            // Calendar and appointments listeners
+            setupAppointmentsListeners();
+
+            // Settings listeners
+            setupSettingsListeners();
+        }
+
+        // Configurar listeners de citas y calendario
+        function setupAppointmentsListeners() {
+            // Vista de calendario vs lista
+            document.getElementById('calendar-view').addEventListener('click', function() {
+                showCalendarView();
+            });
+
+            document.getElementById('list-view').addEventListener('click', function() {
+                showListView();
+            });
+
+            // Navegación del calendario
+            document.getElementById('prev-month').addEventListener('click', function() {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar();
+            });
+
+            document.getElementById('next-month').addEventListener('click', function() {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar();
+            });
+
+            // Filtros
+            document.getElementById('filter-date').addEventListener('change', function() {
+                loadAppointments();
+            });
+
+            document.getElementById('filter-service').addEventListener('change', function() {
+                loadAppointments();
+            });
+
+            document.getElementById('filter-status').addEventListener('change', function() {
+                loadAppointments();
+            });
+        }
+
+        // Configurar listeners de configuración
+        function setupSettingsListeners() {
+            // Toggle de días de la semana
+            document.querySelectorAll('.day-toggle').forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    const day = this.dataset.day;
+                    const startSelect = document.querySelector(`.day-start[data-day="${day}"]`);
+                    const endSelect = document.querySelector(`.day-end[data-day="${day}"]`);
+                    
+                    if (this.checked) {
+                        startSelect.disabled = false;
+                        endSelect.disabled = false;
+                    } else {
+                        startSelect.disabled = true;
+                        endSelect.disabled = true;
+                    }
+                });
+            });
+
+            // Agregar día cerrado
+            document.getElementById('add-closed-day').addEventListener('click', function() {
+                addClosedDayInput();
+            });
+
+            // Guardar configuraciones
+            document.getElementById('save-settings').addEventListener('click', function() {
+                saveSettings();
+            });
+        }
+
+        // Mostrar vista de calendario
+        function showCalendarView() {
+            document.getElementById('calendar-view').classList.add('bg-amber-500', 'text-white');
+            document.getElementById('calendar-view').classList.remove('bg-slate-700');
+            document.getElementById('list-view').classList.remove('bg-amber-500', 'text-white');
+            document.getElementById('list-view').classList.add('bg-slate-700');
+            
+            document.getElementById('calendar-container').classList.remove('hidden');
+            document.getElementById('appointments-list').classList.add('hidden');
+            
+            renderCalendar();
+        }
+
+        // Mostrar vista de lista
+        function showListView() {
+            document.getElementById('list-view').classList.add('bg-amber-500', 'text-white');
+            document.getElementById('list-view').classList.remove('bg-slate-700');
+            document.getElementById('calendar-view').classList.remove('bg-amber-500', 'text-white');
+            document.getElementById('calendar-view').classList.add('bg-slate-700');
+            
+            document.getElementById('calendar-container').classList.add('hidden');
+            document.getElementById('appointments-list').classList.remove('hidden');
+            
+            renderAppointmentsTable();
+        }
+
+        // Renderizar calendario
+        function renderCalendar() {
+            const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            
+            document.getElementById('current-month').textContent = 
+                `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            
+            const calendarDays = document.getElementById('calendar-days');
+            calendarDays.innerHTML = '';
+            
+            // Obtener primer día del mes y último día
+            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
+            
+            // Generar 42 días (6 semanas)
+            for (let i = 0; i < 42; i++) {
+                const cellDate = new Date(startDate);
+                cellDate.setDate(startDate.getDate() + i);
+                
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day-cell bg-slate-700 p-2 border border-slate-600 rounded cursor-pointer hover:bg-slate-600 transition-colors';
+                
+                const isCurrentMonth = cellDate.getMonth() === currentDate.getMonth();
+                const isToday = cellDate.toDateString() === new Date().toDateString();
+                
+                if (!isCurrentMonth) {
+                    dayCell.classList.add('opacity-30');
+                }
+                
+                if (isToday) {
+					dayCell.classList.add('ring-2','ring-amber-400');
+				}
+
+                
+                const dateStr = cellDate.toISOString().split('T')[0];
+                const dayAppointments = calendarAppointments[dateStr] || [];
+                
+                dayCell.innerHTML = `
+                    <div class="text-sm font-medium mb-1">${cellDate.getDate()}</div>
+                    <div class="space-y-1">
+                        ${dayAppointments.slice(0, 3).map(apt => `
+                            <div class="text-xs p-1 rounded ${getStatusBgClass(apt.status)} truncate">
+                                ${apt.appointment_time} - ${apt.customer_name}
+                            </div>
+                        `).join('')}
+                        ${dayAppointments.length > 3 ? `<div class="text-xs text-slate-400">+${dayAppointments.length - 3} más</div>` : ''}
+                    </div>
+                `;
+                
+                dayCell.addEventListener('click', function() {
+                    showDayAppointments(dateStr, dayAppointments);
+                });
+                
+                calendarDays.appendChild(dayCell);
+            }
+        }
+
+        // Obtener clase de color para el estado
+        function getStatusBgClass(status) {
+            const classes = {
+                'pending': 'bg-yellow-500/20 text-yellow-300',
+                'confirmed': 'bg-blue-500/20 text-blue-300',
+                'completed': 'bg-green-500/20 text-green-300',
+                'cancelled': 'bg-red-500/20 text-red-300',
+                'no-show': 'bg-gray-500/20 text-gray-300'
+            };
+            return classes[status] || 'bg-gray-500/20 text-gray-300';
+        }
+
+        // Mostrar citas del día
+        function showDayAppointments(date, appointments) {
+            const formattedDate = new Date(date).toLocaleDateString('es-MX', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            let content = `<h3 class="text-lg font-semibold mb-4">Citas para ${formattedDate}</h3>`;
+            
+            if (appointments.length === 0) {
+                content += '<p class="text-slate-400">No hay citas para este día</p>';
+            } else {
+                content += '<div class="space-y-3">';
+                appointments.forEach(apt => {
+                    content += `
+                        <div class="bg-slate-700 p-3 rounded-lg">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="font-medium">${escapeHtml(apt.customer_name)}</div>
+                                    <div class="text-sm text-slate-400">${apt.service_name}</div>
+                                    <div class="text-sm">${apt.appointment_time}</div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <span class="px-2 py-1 text-xs rounded-full ${getStatusClass(apt.status)}">${getStatusText(apt.status)}</span>
+                                    <button onclick="editAppointment(${apt.id})" class="text-blue-400 hover:text-blue-300">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                content += '</div>';
+            }
+            
+            // Mostrar en un modal simple (se puede mejorar)
+            alert(content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim());
+        }
+
+        // Agregar input para día cerrado
+        function addClosedDayInput() {
+            const container = document.getElementById('closed-days-container');
+            const div = document.createElement('div');
+            div.className = 'flex items-center space-x-2 bg-slate-700 p-2 rounded';
+            div.innerHTML = `
+                <input type="date" class="bg-slate-600 border border-slate-500 rounded px-2 py-1 text-sm flex-1 closed-date">
+                <input type="text" placeholder="Motivo (opcional)" class="bg-slate-600 border border-slate-500 rounded px-2 py-1 text-sm flex-1 closed-reason">
+                <button type="button" onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        }
+
+        // Guardar configuraciones
+        async function saveSettings() {
+            try {
+                // Recopilar horarios de negocio
+                const businessHours = [];
+                for (let day = 0; day <= 6; day++) {
+                    const toggle = document.querySelector(`.day-toggle[data-day="${day}"]`);
+                    const startSelect = document.querySelector(`.day-start[data-day="${day}"]`);
+                    const endSelect = document.querySelector(`.day-end[data-day="${day}"]`);
+                    
+                    businessHours.push({
+                        day_of_week: day,
+                        is_closed: !toggle.checked,
+                        opening_time: toggle.checked ? startSelect.value : null,
+                        closing_time: toggle.checked ? endSelect.value : null
+                    });
+                }
+                
+                // Recopilar días cerrados
+                const closedDays = [];
+                document.querySelectorAll('.closed-date').forEach((input, index) => {
+                    const reasonInput = document.querySelectorAll('.closed-reason')[index];
+                    if (input.value) {
+                        closedDays.push({
+                            date: input.value,
+                            reason: reasonInput.value || ''
+                        });
+                    }
+                });
+                
+                // Recopilar otras configuraciones
+                const settings = {
+                    deposit_amount: document.getElementById('deposit-amount').value,
+                    advance_booking_days: document.getElementById('max-advance').value.split(' ')[0],
+                    minimum_advance_hours: document.getElementById('min-advance').value.split(' ')[0],
+                    slot_duration: document.getElementById('slot-interval').value.split(' ')[0],
+                    reminder_24h: document.getElementById('reminder-24h').checked.toString(),
+                    reminder_3h: document.getElementById('reminder-3h').checked.toString(),
+                    confirmation_message: document.getElementById('confirmation-message').value,
+                    reminder_message: document.getElementById('reminder-message').value
+                };
+                
+                const data = {
+                    business_hours: businessHours,
+                    closed_days: closedDays,
+                    settings: settings
+                };
+                
+                const response = await fetch(`${API_BASE_URL}/settings`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    showToast('success', 'Éxito', 'Configuraciones guardadas correctamente');
+                } else {
+                    throw new Error('Error al guardar configuraciones');
+                }
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showToast('error', 'Error', 'No se pudieron guardar las configuraciones');
+            }
+        }
+
+        // Manejar login
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('login-error');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    currentUser = result.user;
+                    document.getElementById('login-modal').classList.add('hidden');
+                    errorDiv.classList.add('hidden');
+                    initializeAdmin();
+                } else {
+                    errorDiv.textContent = result.error || 'Error de autenticación';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorDiv.textContent = 'Error de conexión';
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        // Inicializar panel de administración
+        async function initializeAdmin() {
+            loadDashboardData();
+            loadServices(); // Cargar servicios para los modales
+        }
+
+        // Cargar datos según la sección
+        async function loadSectionData(section) {
+            switch(section) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'appointments':
+                    loadAppointments();
+                    showCalendarView(); // Mostrar calendario por defecto
+                    break;
+                case 'services':
+                    loadServices();
+                    break;
+                case 'settings':
+                    loadSettings();
+                    break;
+            }
+        }
+
+        // Cargar datos del dashboard
+        async function loadDashboardData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/dashboard/stats`);
+                const stats = await response.json();
+                
+                // Actualizar estadísticas
+                updateDashboardStats(stats);
+                updateUpcomingAppointments(stats.upcoming_today);
+                
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showToast('error', 'Error', 'No se pudieron cargar las estadísticas');
+            }
+        }
+
+        // Actualizar estadísticas del dashboard
+        function updateDashboardStats(stats) {
+            // Citas de hoy
+            const todayCard = document.querySelector('.grid .bg-slate-800:nth-child(1)');
+            todayCard.querySelector('h3').textContent = stats.today.total || 0;
+            const todayDetails = todayCard.querySelectorAll('.border-t .text-white');
+            todayDetails[0].textContent = stats.today.completed || 0;
+            todayDetails[1].textContent = stats.today.pending || 0;
+            
+            // Citas de la semana
+            const weekCard = document.querySelector('.grid .bg-slate-800:nth-child(2)');
+            weekCard.querySelector('h3').textContent = stats.week.total || 0;
+            const weekDetails = weekCard.querySelectorAll('.border-t .text-white');
+            weekDetails[0].textContent = stats.week.completed || 0;
+            weekDetails[1].textContent = stats.week.pending || 0;
+            
+            // Citas del mes
+            const monthCard = document.querySelector('.grid .bg-slate-800:nth-child(3)');
+            monthCard.querySelector('h3').textContent = stats.month.total || 0;
+            const monthDetails = monthCard.querySelectorAll('.border-t .text-white');
+            monthDetails[0].textContent = stats.month.completed || 0;
+            monthDetails[1].textContent = stats.month.cancelled || 0;
+        }
+
+        // Actualizar próximas citas
+        function updateUpcomingAppointments(appointments) {
+            const tbody = document.querySelector('#dashboard-content tbody');
+            tbody.innerHTML = '';
+            
+            if (appointments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-3 text-center text-slate-400">No hay citas pendientes para hoy</td></tr>';
+                return;
+            }
+            
+            appointments.forEach(appointment => {
+                const row = `
+                    <tr>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">${escapeHtml(appointment.customer_name)}</td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">${escapeHtml(appointment.service_name)}</td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">${appointment.appointment_time}</td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">${escapeHtml(appointment.customer_phone)}</td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">
+                            <span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Cargar citas
+        async function loadAppointments() {
+            try {
+                const params = new URLSearchParams();
+                
+                const dateFilter = document.getElementById('filter-date')?.value;
+                const serviceFilter = document.getElementById('filter-service')?.value;
+                const statusFilter = document.getElementById('filter-status')?.value;
+                
+                if (dateFilter) params.append('date', dateFilter);
+                if (serviceFilter) params.append('service', serviceFilter);
+                if (statusFilter) params.append('status', statusFilter);
+                
+                const response = await fetch(`${API_BASE_URL}/appointments?${params}`);
+                currentAppointments = await response.json();
+                
+                // Organizar citas por fecha para el calendario
+                calendarAppointments = {};
+                currentAppointments.forEach(apt => {
+                    if (!calendarAppointments[apt.appointment_date]) {
+                        calendarAppointments[apt.appointment_date] = [];
+                    }
+                    calendarAppointments[apt.appointment_date].push(apt);
+                });
+                
+                // Renderizar vista activa
+                if (!document.getElementById('calendar-container').classList.contains('hidden')) {
+                    renderCalendar();
+                } else {
+                    renderAppointmentsTable();
+                }
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+                showToast('error', 'Error', 'No se pudieron cargar las citas');
+            }
+        }
+
+        // Renderizar tabla de citas
+        function renderAppointmentsTable() {
+            const tbody = document.querySelector('#appointments-list tbody');
+            tbody.innerHTML = '';
+            
+            if (currentAppointments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-3 text-center text-slate-400">No hay citas registradas</td></tr>';
+                return;
+            }
+            
+            currentAppointments.forEach(appointment => {
+                const statusClass = getStatusClass(appointment.status);
+                const statusText = getStatusText(appointment.status);
+                const formattedDate = new Date(appointment.appointment_date).toLocaleDateString('es-MX');
+                
+                const row = `
+                    <tr>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">${formattedDate}</td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">${escapeHtml(appointment.customer_name)}</td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">${escapeHtml(appointment.service_name)}</td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">${appointment.appointment_time}</td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">
+                            <span class="px-2 py-1 text-xs rounded-full ${statusClass}">${statusText}</span>
+                        </td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">
+                            <div class="flex space-x-2">
+                                <button onclick="editAppointment(${appointment.id})" class="text-blue-400 hover:text-blue-300" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                ${appointment.status === 'pending' ? `
+                                <button onclick="updateAppointmentStatus(${appointment.id}, 'completed')" class="text-green-400 hover:text-green-300" title="Completar">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button onclick="updateAppointmentStatus(${appointment.id}, 'cancelled')" class="text-red-400 hover:text-red-300" title="Cancelar">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                ` : `
+                                <button onclick="deleteAppointment(${appointment.id})" class="text-red-400 hover:text-red-300" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                `}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Cargar servicios
+        async function loadServices() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/services?all=true`);
+                currentServices = await response.json();
+                renderServicesTable();
+                populateServiceSelects();
+            } catch (error) {
+                console.error('Error loading services:', error);
+                showToast('error', 'Error', 'No se pudieron cargar los servicios');
+            }
+        }
+
+        // Renderizar tabla de servicios
+        function renderServicesTable() {
+            const tbody = document.querySelector('#services-content tbody');
+            if (!tbody) return; // Si no estamos en la página de servicios
+            
+            tbody.innerHTML = '';
+            
+            if (currentServices.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-3 text-center text-slate-400">No hay servicios registrados</td></tr>';
+                return;
+            }
+            
+            currentServices.forEach(service => {
+                const statusClass = service.active ? 'bg-green-500/20 text-green-500' : 'bg-gray-500/20 text-gray-500';
+                const statusText = service.active ? 'Activo' : 'Inactivo';
+                
+                const row = `
+                    <tr>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">${escapeHtml(service.name)}</td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">$${service.price} MXN</td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">${service.duration} min</td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">
+                            <span class="px-2 py-1 text-xs rounded-full ${statusClass}">${statusText}</span>
+                        </td>
+                        <td class="px-4 py-3 truncate" style="max-width: 16rem;">
+                            <div class="flex space-x-2">
+                                <button onclick="editService(${service.id})" class="text-blue-400 hover:text-blue-300" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteService(${service.id})" class="text-red-400 hover:text-red-300" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Poblar selects de servicios en los modales
+        function populateServiceSelects() {
+		  const targets = [
+			document.getElementById('appointment-service'),
+			document.getElementById('filter-service')
+		  ];
+		  targets.forEach(sel => {
+			if (!sel) return;
+			const currentValue = sel.value;
+			const isFilter = sel.id === 'filter-service';
+			sel.innerHTML = isFilter
+			  ? '<option value="">Todos los servicios</option>'
+			  : '<option value="">Selecciona un servicio</option>';
+			currentServices.forEach(s => {
+			  if (isFilter || s.active) {
+				sel.innerHTML += `<option value="${s.id}">${escapeHtml(s.name)} - $${s.price}</option>`;
+			  }
+			});
+			sel.value = currentValue;
+		  });
+		}
+
+        // ======================== GESTIÓN DE CITAS ========================
+
+        // Crear nueva cita
+        async function createAppointment(formData) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/appointments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showToast('success', 'Éxito', 'Cita creada correctamente');
+                    closeAllModals();
+                    loadAppointments();
+                    loadDashboardData();
+                } else {
+                    throw new Error(result.error || 'Error al crear la cita');
+                }
+            } catch (error) {
+                console.error('Error creating appointment:', error);
+                showToast('error', 'Error', error.message);
+            }
+        }
+
+        // Editar cita
+        function editAppointment(appointmentId) {
+            const appointment = currentAppointments.find(a => a.id === appointmentId);
+            if (!appointment) {
+                showToast('error', 'Error', 'Cita no encontrada');
+                return;
+            }
+            
+            editingAppointment = appointment;
+            
+            // Poblar el modal con los datos de la cita
+            document.querySelector('#new-appointment-modal select').value = appointment.service_id;
+            document.querySelector('#new-appointment-modal input[type="date"]').value = appointment.appointment_date;
+            document.querySelector('#new-appointment-modal input[type="text"]').value = appointment.customer_name;
+            document.querySelector('#new-appointment-modal input[type="tel"]').value = appointment.customer_phone;
+            document.querySelector('#new-appointment-modal input[type="number"]').value = appointment.deposit_amount;
+            
+            // Cambiar título del modal
+            document.querySelector('#new-appointment-modal h3').textContent = 'Editar Cita';
+            
+            // Mostrar modal
+            document.getElementById('new-appointment-modal').classList.remove('hidden');
+        }
+
+        // Actualizar estado de cita
+        async function updateAppointmentStatus(appointmentId, newStatus) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/appointments/${appointmentId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                
+                if (response.ok) {
+                    showToast('success', 'Éxito', 'Estado actualizado correctamente');
+                    loadAppointments();
+                    loadDashboardData();
+                } else {
+                    throw new Error('Error al actualizar estado');
+                }
+            } catch (error) {
+                console.error('Error updating appointment status:', error);
+                showToast('error', 'Error', 'No se pudo actualizar el estado');
+            }
+        }
+
+        // Eliminar cita
+        async function deleteAppointment(appointmentId) {
+            if (!confirm('¿Estás seguro de que deseas eliminar esta cita?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/appointments/${appointmentId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    showToast('success', 'Éxito', 'Cita eliminada correctamente');
+                    loadAppointments();
+                    loadDashboardData();
+                } else {
+                    throw new Error('Error al eliminar la cita');
+                }
+            } catch (error) {
+                console.error('Error deleting appointment:', error);
+                showToast('error', 'Error', 'No se pudo eliminar la cita');
+            }
+        }
+
+        // ======================== GESTIÓN DE SERVICIOS ========================
+
+        // Crear nuevo servicio
+        async function createService(formData) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/services`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showToast('success', 'Éxito', 'Servicio creado correctamente');
+                    closeAllModals();
+                    loadServices();
+                } else {
+                    throw new Error(result.error || 'Error al crear el servicio');
+                }
+            } catch (error) {
+                console.error('Error creating service:', error);
+                showToast('error', 'Error', error.message);
+            }
+        }
+
+        // Editar servicio
+        function editService(serviceId) {
+            const service = currentServices.find(s => s.id === serviceId);
+            if (!service) {
+                showToast('error', 'Error', 'Servicio no encontrado');
+                return;
+            }
+            
+            editingService = service;
+            
+            // Poblar el modal con los datos del servicio
+            document.querySelector('#new-service-modal input[type="text"]').value = service.name;
+            document.querySelector('#new-service-modal input[type="number"]').value = service.price;
+            document.querySelector('#new-service-modal select').value = service.duration;
+            document.querySelector('#new-service-modal input[type="checkbox"]').checked = service.active;
+            
+            // Cambiar título del modal
+            document.querySelector('#new-service-modal h3').textContent = 'Editar Servicio';
+            
+            // Mostrar modal
+            document.getElementById('new-service-modal').classList.remove('hidden');
+        }
+
+        // Actualizar servicio
+        async function updateService(serviceId, formData) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/services/${serviceId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    showToast('success', 'Éxito', 'Servicio actualizado correctamente');
+                    closeAllModals();
+                    loadServices();
+                } else {
+                    throw new Error('Error al actualizar el servicio');
+                }
+            } catch (error) {
+                console.error('Error updating service:', error);
+                showToast('error', 'Error', 'No se pudo actualizar el servicio');
+            }
+        }
+
+        // Eliminar servicio
+        async function deleteService(serviceId) {
+            if (!confirm('¿Estás seguro de que deseas eliminar este servicio?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/services/${serviceId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    showToast('success', 'Éxito', 'Servicio eliminado correctamente');
+                    loadServices();
+                } else {
+                    throw new Error('Error al eliminar el servicio');
+                }
+            } catch (error) {
+                console.error('Error deleting service:', error);
+                showToast('error', 'Error', 'No se pudo eliminar el servicio');
+            }
+        }
+
+        // ======================== CONFIGURACIÓN DE MODALES ========================
+
+        function setupModalListeners() {
+            // New appointment modal
+            document.getElementById('new-appointment-btn').addEventListener('click', function() {
+                editingAppointment = null;
+                document.querySelector('#new-appointment-modal h3').textContent = 'Nueva Cita';
+                resetAppointmentForm();
+                document.getElementById('new-appointment-modal').classList.remove('hidden');
+            });
+
+            // Close appointment modal
+            document.getElementById('close-appointment-modal').addEventListener('click', closeAllModals);
+            document.getElementById('cancel-appointment-modal').addEventListener('click', closeAllModals);
+
+            // Save appointment
+            document.querySelector('#new-appointment-modal button[class*="bg-amber-500"]').addEventListener('click', function() {
+                handleAppointmentSubmit();
+            });
+
+            // New service modal
+            document.getElementById('new-service-btn').addEventListener('click', function() {
+                editingService = null;
+                document.querySelector('#new-service-modal h3').textContent = 'Nuevo Servicio';
+                resetServiceForm();
+                document.getElementById('new-service-modal').classList.remove('hidden');
+            });
+
+            // Close service modal
+            document.getElementById('close-service-modal').addEventListener('click', closeAllModals);
+            document.getElementById('cancel-service-modal').addEventListener('click', closeAllModals);
+
+            // Save service
+            document.querySelector('#new-service-modal button[class*="bg-amber-500"]').addEventListener('click', function() {
+                handleServiceSubmit();
+            });
+
+            // Confirmation modal
+            document.getElementById('close-confirmation-modal')?.addEventListener('click', function() {
+                document.getElementById('confirmation-modal').classList.add('hidden');
+            });
+            document.getElementById('cancel-confirmation-modal')?.addEventListener('click', function() {
+                document.getElementById('confirmation-modal').classList.add('hidden');
+            });
+        }
+
+        // Manejar envío de formulario de cita
+        function handleAppointmentSubmit() {
+            const modal = document.getElementById('new-appointment-modal');
+            const formData = {
+                service_id: parseInt(modal.querySelector('select').value),
+                customer_name: modal.querySelector('input[type="text"]').value.trim(),
+                customer_phone: modal.querySelector('input[type="tel"]').value.trim(),
+                appointment_date: modal.querySelector('input[type="date"]').value,
+                appointment_time: modal.querySelector('select:last-of-type').value,
+                deposit_amount: parseFloat(modal.querySelector('input[type="number"]').value) || 50.00,
+                notes: 'Creada desde panel admin'
+            };
+            
+            // Validar
+            if (!formData.service_id || !formData.customer_name || !formData.customer_phone || 
+                !formData.appointment_date || !formData.appointment_time) {
+                showToast('error', 'Error', 'Por favor completa todos los campos obligatorios');
+                return;
+            }
+            
+            if (editingAppointment) {
+                // Actualizar cita existente
+                updateAppointment(editingAppointment.id, formData);
+            } else {
+                // Crear nueva cita
+                createAppointment(formData);
+            }
+        }
+
+        // Actualizar cita existente
+        async function updateAppointment(appointmentId, formData) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/appointments/${appointmentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({...formData, status: 'pending'})
+                });
+                
+                if (response.ok) {
+                    showToast('success', 'Éxito', 'Cita actualizada correctamente');
+                    closeAllModals();
+                    loadAppointments();
+                    loadDashboardData();
+                } else {
+                    throw new Error('Error al actualizar la cita');
+                }
+            } catch (error) {
+                console.error('Error updating appointment:', error);
+                showToast('error', 'Error', 'No se pudo actualizar la cita');
+            }
+        }
+
+        // Manejar envío de formulario de servicio
+        function handleServiceSubmit() {
+            const modal = document.getElementById('new-service-modal');
+            const formData = {
+                name: modal.querySelector('input[type="text"]').value.trim(),
+                price: parseFloat(modal.querySelector('input[type="number"]').value),
+                duration: parseInt(modal.querySelector('select').value),
+                active: modal.querySelector('input[type="checkbox"]').checked,
+                description: '' // Se puede agregar un campo de descripción después
+            };
+            
+            // Validar
+            if (!formData.name || !formData.price || !formData.duration) {
+                showToast('error', 'Error', 'Por favor completa todos los campos obligatorios');
+                return;
+            }
+            
+            if (editingService) {
+                // Actualizar servicio existente
+                updateService(editingService.id, formData);
+            } else {
+                // Crear nuevo servicio
+                createService(formData);
+            }
+        }
+
+        // Cerrar todos los modales
+        function closeAllModals() {
+            document.getElementById('new-appointment-modal').classList.add('hidden');
+            document.getElementById('new-service-modal').classList.add('hidden');
+            resetAppointmentForm();
+            resetServiceForm();
+            editingAppointment = null;
+            editingService = null;
+        }
+
+        // Reset formulario de cita
+        function resetAppointmentForm() {
+            const modal = document.getElementById('new-appointment-modal');
+            modal.querySelector('select').value = '';
+            modal.querySelector('input[type="date"]').value = '';
+            modal.querySelector('input[type="text"]').value = '';
+            modal.querySelector('input[type="tel"]').value = '';
+            modal.querySelector('input[type="number"]').value = '50';
+        }
+
+        // Reset formulario de servicio
+        function resetServiceForm() {
+            const modal = document.getElementById('new-service-modal');
+            modal.querySelector('input[type="text"]').value = '';
+            modal.querySelector('input[type="number"]').value = '';
+            modal.querySelector('select').value = '30';
+            modal.querySelector('input[type="checkbox"]').checked = true;
+        }
+
+        // Cargar configuraciones
+        async function loadSettings() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/settings`);
+                const settings = await response.json();
+                currentSettings = settings;
+                
+                // Cargar horarios de negocio
+                settings.business_hours.forEach(hours => {
+                    const toggle = document.querySelector(`.day-toggle[data-day="${hours.day_of_week}"]`);
+                    const startSelect = document.querySelector(`.day-start[data-day="${hours.day_of_week}"]`);
+                    const endSelect = document.querySelector(`.day-end[data-day="${hours.day_of_week}"]`);
+                    
+                    if (toggle && startSelect && endSelect) {
+                        toggle.checked = !hours.is_closed;
+                        startSelect.disabled = hours.is_closed;
+                        endSelect.disabled = hours.is_closed;
+                        if (!hours.is_closed) {
+                            startSelect.value = hours.opening_time;
+                            endSelect.value = hours.closing_time;
+                        }
+                    }
+                });
+                
+                // Cargar días cerrados
+                const container = document.getElementById('closed-days-container');
+                container.innerHTML = '';
+                settings.closed_days.forEach(day => {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center space-x-2 bg-slate-700 p-2 rounded';
+                    div.innerHTML = `
+                        <input type="date" value="${day.date}" class="bg-slate-600 border border-slate-500 rounded px-2 py-1 text-sm flex-1 closed-date">
+                        <input type="text" value="${day.reason || ''}" placeholder="Motivo (opcional)" class="bg-slate-600 border border-slate-500 rounded px-2 py-1 text-sm flex-1 closed-reason">
+                        <button type="button" onclick="this.parentElement.remove()" class="text-red-400 hover:text-red-300">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    container.appendChild(div);
+                });
+                
+                // Cargar otras configuraciones
+                const settingsObj = settings.settings;
+                if (settingsObj.deposit_amount) {
+                    document.getElementById('deposit-amount').value = settingsObj.deposit_amount;
+                }
+                if (settingsObj.reminder_24h) {
+                    document.getElementById('reminder-24h').checked = settingsObj.reminder_24h === 'true';
+                }
+                if (settingsObj.reminder_3h) {
+                    document.getElementById('reminder-3h').checked = settingsObj.reminder_3h === 'true';
+                }
+                if (settingsObj.confirmation_message) {
+                    document.getElementById('confirmation-message').value = settingsObj.confirmation_message;
+                }
+                if (settingsObj.reminder_message) {
+                    document.getElementById('reminder-message').value = settingsObj.reminder_message;
+                }
+                
+                showToast('success', 'Éxito', 'Configuraciones cargadas correctamente');
+                
+            } catch (error) {
+                console.error('Error loading settings:', error);
+                showToast('error', 'Error', 'No se pudieron cargar las configuraciones');
+            }
+        }
+
+        // ======================== FUNCIONES AUXILIARES ========================
+
+        // Funciones auxiliares para estados
+        function getStatusClass(status) {
+            const classes = {
+                'pending': 'bg-yellow-500/20 text-yellow-500',
+                'confirmed': 'bg-blue-500/20 text-blue-500',
+                'completed': 'bg-green-500/20 text-green-500',
+                'cancelled': 'bg-red-500/20 text-red-500',
+                'no-show': 'bg-gray-500/20 text-gray-500'
+            };
+            return classes[status] || 'bg-gray-500/20 text-gray-500';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'pending': 'Pendiente',
+                'confirmed': 'Confirmada',
+                'completed': 'Completada',
+                'cancelled': 'Cancelada',
+                'no-show': 'No-show'
+            };
+            return texts[status] || 'Desconocido';
+        }
+
+        // Escapar HTML para seguridad
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.toString().replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        // Toast notification
+        function showToast(type, title, message) {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toast-icon');
+            const toastTitle = document.getElementById('toast-title');
+            const toastMessage = document.getElementById('toast-message');
+            
+            // Set icon and color based on type
+            let iconClass;
+            switch(type) {
+                case 'success':
+                    iconClass = 'fas fa-check-circle text-green-500';
+                    break;
+                case 'error':
+                    iconClass = 'fas fa-exclamation-circle text-red-500';
+                    break;
+                case 'warning':
+                    iconClass = 'fas fa-exclamation-triangle text-yellow-500';
+                    break;
+                default:
+                    iconClass = 'fas fa-info-circle text-blue-500';
+            }
+            
+            // Clear previous classes
+            toastIcon.className = '';
+            toastIcon.classList.add('fas', 'text-lg');
+            
+            // Add specific icon class
+            iconClass.split(' ').forEach(cls => toastIcon.classList.add(cls));
+            
+            // Set content
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            
+            // Show toast
+            toast.classList.remove('hidden');
+            
+            // Hide after 4 seconds
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 4000);
+        }
+</script>
+</body>
+</html>

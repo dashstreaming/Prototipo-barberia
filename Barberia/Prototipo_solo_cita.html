@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Montana Barber Shop - Reserva tu cita</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f8f8;
+        }
+        
+        .gold-text {
+            color: #D4AF37;
+        }
+        
+        .gold-bg {
+            background-color: #D4AF37;
+        }
+        
+        .gold-border {
+            border-color: #D4AF37;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+        
+        .flatpickr-calendar {
+            font-family: 'Poppins', sans-serif !important;
+        }
+        
+        .whatsapp-btn:hover {
+            background-color: #25D366;
+            color: white;
+        }
+        
+        .facebook-btn:hover {
+            background-color: #3b5998;
+            color: white;
+        }
+        
+        .instagram-btn:hover {
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D, #F56040, #F77737, #FCAF45, #FFDC80);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <!-- Header -->
+    <header class="bg-black text-white sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center mr-3">
+                    <img src="https://i.imgur.com/qTy1zlY.png" alt="Montana Barber Shop Logo" class="w-full h-full object-contain">
+                </div>
+                <h1 class="text-xl font-bold gold-text">MONTANA <span class="text-white">BARBER SHOP</span></h1>
+            </div>
+            <a href="tel:+52899128124" class="bg-white text-black px-4 py-2 rounded-full font-medium flex items-center hover:bg-gray-200 transition-all">
+                <i class="fas fa-phone mr-2 gold-text"></i> Llamar
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="mb-12 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Corte de cabello profesional</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">Reserva tu cita en nuestra barbería premium y luce tu mejor estilo</p>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="mb-12">
+            <h3 class="text-2xl font-bold mb-6 text-center gold-text">Nuestros Servicios</h3>
+            
+            <!-- Loading state -->
+            <div id="services-loading" class="text-center py-8">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gold-text"></div>
+                <p class="mt-2 text-gray-600">Cargando servicios...</p>
+            </div>
+            
+            <!-- Error state -->
+            <div id="services-error" class="hidden text-center py-8">
+                <div class="text-red-500 mb-4">
+                    <i class="fas fa-exclamation-triangle text-4xl"></i>
+                </div>
+                <p class="text-red-600 mb-4">Error al cargar los servicios</p>
+                <button onclick="loadServices()" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                    Reintentar
+                </button>
+            </div>
+            
+            <!-- Services grid - se llena dinámicamente -->
+            <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                <!-- Los servicios se cargan aquí dinámicamente -->
+            </div>
+        </section>
+        <!-- Booking Form (initially hidden) -->
+        <section id="booking-form" class="hidden max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold gold-text">Reservar cita</h3>
+                <button onclick="closeBookingForm()" class="text-gray-500 hover:text-black">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="font-bold mb-2" id="selected-service-name">Servicio: Corte Clásico</h4>
+                <div class="flex justify-between">
+                    <span id="selected-service-price">Precio: $200 MXN</span>
+                    <span id="selected-service-duration">Duración: 45 min</span>
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2" for="booking-date">Selecciona fecha:</label>
+                <input type="text" id="booking-date" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="Elige una fecha">
+                <p class="text-sm text-gray-500 mt-1">Las citas solo pueden reservarse con máximo 1 semana de anticipación</p>
+            </div>
+
+            <div id="time-slots-container" class="hidden mb-6">
+                <label class="block text-gray-700 mb-2">Horarios disponibles:</label>
+                <div id="time-slots" class="grid grid-cols-3 gap-3">
+                    <!-- Time slots will be generated here -->
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2" for="full-name">Nombre completo:</label>
+                <input type="text" id="full-name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="Tu nombre completo" required>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2" for="phone">Número de celular:</label>
+                <input type="tel" id="phone" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="55 1234 5678" required>
+            </div>
+            
+            <div class="mb-6">
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="policy-check" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-yellow-300" required>
+                    </div>
+                    <label for="policy-check" class="ml-2 text-sm text-gray-700">
+                        Requiero un anticipo no reembolsable de $50 MXN que se descuenta del precio final. Cancelaciones con menos de 24 horas pierden el anticipo.
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mb-6 text-center">
+                <button onclick="processPayment()" class="gold-bg text-black px-6 py-3 rounded-full font-bold w-full hover:bg-yellow-600 transition-all">
+                    Pagar anticipo de $50 MXN
+                </button>
+                <p class="text-sm text-gray-500 mt-2">El resto se paga al llegar</p>
+            </div>
+        </section>
+
+        <!-- Confirmation (initially hidden) -->
+        <section id="confirmation" class="hidden max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12 text-center">
+            <div class="mb-6">
+                <i class="fas fa-check-circle text-5xl gold-text mb-4"></i>
+                <h3 class="text-2xl font-bold mb-2">¡Tu cita ha sido reservada!</h3>
+                <p class="text-gray-600 mb-4">Hemos enviado los detalles a tu celular</p>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                    <p class="font-bold" id="confirmation-service">Servicio: Corte Clásico</p>
+                    <p id="confirmation-date">Fecha: 15 de Julio, 2023</p>
+                    <p id="confirmation-time">Hora: 4:30 PM</p>
+                    <p class="font-bold mt-2">Total a pagar: <span id="confirmation-total">$200 MXN</span></p>
+                    <p class="text-sm">(Anticipo de $50 MXN ya incluido)</p>
+                </div>
+                
+                <div class="flex flex-col space-y-3">
+                    <button onclick="addToCalendar()" class="bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition-all">
+                        <i class="far fa-calendar-plus mr-2"></i> Agregar a mi calendario
+                    </button>
+                    <button onclick="sendWhatsAppConfirmation()" class="bg-green-500 text-white px-6 py-3 rounded-full font-medium hover:bg-green-600 transition-all">
+                        <i class="fab fa-whatsapp mr-2"></i> Enviar confirmación por WhatsApp
+                    </button>
+                    <button onclick="makeAnotherAppointment()" class="bg-blue-500 text-white px-6 py-3 rounded-full font-medium hover:bg-blue-600 transition-all">
+                        <i class="fas fa-plus mr-2"></i> Hacer otra cita
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-xl font-bold mb-4 gold-text">MONTANA BARBER SHOP</h4>
+                    <p class="mb-4">Barbería profesional con los mejores estilistas de la ciudad.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="facebook-btn w-10 h-10 rounded-full border border-white flex items-center justify-center hover:border-transparent transition-all">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="instagram-btn w-10 h-10 rounded-full border border-white flex items-center justify-center hover:border-transparent transition-all">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/52899128124" class="whatsapp-btn w-10 h-10 rounded-full border border-white flex items-center justify-center hover:border-transparent transition-all">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-xl font-bold mb-4 gold-text">Horario</h4>
+                    <p class="mb-2">Lunes a Viernes: 9:00 AM - 7:00 PM</p>
+                    <p class="mb-2">Sábado: 9:00 AM - 5:00 PM</p>
+                    <p>Domingo: Cerrado</p>
+                </div>
+                
+                <div>
+                    <h4 class="text-xl font-bold mb-4 gold-text">Ubicación</h4>
+                    <p class="mb-4">
+                        <i class="fas fa-map-marker-alt mr-2 gold-text"></i> 
+                        Calle Río San Juan #415,<br>
+                        Col. Las Fuentes,<br>
+                        Reynosa, México
+                    </p>
+                    <a href="https://maps.google.com" class="inline-flex items-center gold-text hover:underline">
+                        <i class="fas fa-directions mr-2"></i> Cómo llegar
+                    </a>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500 relative">
+                <p>&copy; 2025 Montana Barber Shop. Todos los derechos reservados.</p>
+                <div class="absolute right-4 bottom-2 flex items-center">
+                    <span class="text-white text-sm mr-2">made by savi</span>
+                    <img src="https://i.imgur.com/Q57FOQQ.png" alt="savi logo" class="h-6 w-auto">
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+        
+        // Selected service data
+        let selectedService = {
+            id: '',
+            name: '',
+            price: 0,
+            duration: 0
+        };
+        
+        // Booking data
+        let bookingData = {
+            date: '',
+            time: '',
+            customerName: '',
+            phone: ''
+        };
+
+        let availableServices = [];
+        let businessHours = {};
+        let closedDays = [];
+        
+        // Cargar datos al inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadServices();
+            loadBusinessSettings();
+            initializeDatePicker();
+        });
+
+        // Función para cargar configuraciones de negocio
+        async function loadBusinessSettings() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/settings`);
+                const settings = await response.json();
+                
+                // Procesar horarios de negocio
+                businessHours = {};
+                settings.business_hours.forEach(hours => {
+                    businessHours[hours.day_of_week] = {
+                        is_closed: hours.is_closed,
+                        opening_time: hours.opening_time,
+                        closing_time: hours.closing_time
+                    };
+                });
+                
+                // Procesar días cerrados especiales
+                closedDays = settings.closed_days.map(day => day.date);
+                
+            } catch (error) {
+                console.error('Error loading business settings:', error);
+                // Usar configuraciones por defecto
+                businessHours = {
+                    1: { is_closed: false, opening_time: '09:00', closing_time: '19:00' },
+                    2: { is_closed: false, opening_time: '09:00', closing_time: '19:00' },
+                    3: { is_closed: false, opening_time: '09:00', closing_time: '19:00' },
+                    4: { is_closed: false, opening_time: '09:00', closing_time: '19:00' },
+                    5: { is_closed: false, opening_time: '09:00', closing_time: '19:00' },
+                    6: { is_closed: false, opening_time: '09:00', closing_time: '17:00' },
+                    0: { is_closed: true, opening_time: null, closing_time: null }
+                };
+            }
+        }
+
+        // Función para cargar servicios desde el backend
+        async function loadServices() {
+            const loadingEl = document.getElementById('services-loading');
+            const errorEl = document.getElementById('services-error');
+            const gridEl = document.getElementById('services-grid');
+            
+            // Mostrar loading
+            loadingEl.classList.remove('hidden');
+            errorEl.classList.add('hidden');
+            gridEl.classList.add('hidden');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/services`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const services = await response.json();
+                availableServices = services;
+                
+                // Ocultar loading y mostrar servicios
+                loadingEl.classList.add('hidden');
+                
+                if (services.length === 0) {
+                    errorEl.querySelector('p').textContent = 'No hay servicios disponibles en este momento';
+                    errorEl.classList.remove('hidden');
+                } else {
+                    renderServices(services);
+                    gridEl.classList.remove('hidden');
+                }
+                
+            } catch (error) {
+                console.error('Error loading services:', error);
+                
+                // Mostrar error
+                loadingEl.classList.add('hidden');
+                errorEl.classList.remove('hidden');
+            }
+        }
+
+        // Función para renderizar servicios en la página
+        function renderServices(services) {
+            const servicesContainer = document.getElementById('services-grid');
+            servicesContainer.innerHTML = '';
+
+            services.forEach(service => {
+                const serviceCard = document.createElement('div');
+                serviceCard.className = 'service-card bg-white rounded-lg shadow-md p-6 transition-all';
+                serviceCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">${escapeHtml(service.name)}</h4>
+                        <span class="text-lg font-bold gold-text">$${service.price} MXN</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">${escapeHtml(service.description || '')}</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> ${service.duration} min</span>
+                        <button onclick="selectService(${service.id}, '${escapeHtml(service.name)}', ${service.price}, ${service.duration})" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
+                    </div>
+                `;
+                servicesContainer.appendChild(serviceCard);
+            });
+        }
+
+        // Función para escapar HTML (seguridad)
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+        
+        // Initialize date picker mejorado
+        function initializeDatePicker() {
+            const now = new Date();
+            const minDate = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour from now
+            const maxDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 1 week from now
+            
+            // Initialize date picker con validación de días cerrados
+            flatpickr("#booking-date", {
+                enableTime: false,
+                dateFormat: "Y-m-d",
+                minDate: minDate,
+                maxDate: maxDate,
+                disable: [
+                    function(date) {
+                        // Obtener día de la semana (0=domingo, 1=lunes, etc.)
+                        const dayOfWeek = date.getDay();
+                        
+                        // Verificar si el día está cerrado según configuración
+                        if (businessHours[dayOfWeek] && businessHours[dayOfWeek].is_closed) {
+                            return true;
+                        }
+                        
+                        // Verificar días cerrados especiales
+                        const dateStr = date.toISOString().split('T')[0];
+                        if (closedDays.includes(dateStr)) {
+                            return true;
+                        }
+                        
+                        return false;
+                    }
+                ],
+                locale: {
+                    firstDayOfWeek: 1 // Start week on Monday
+                },
+                onChange: function(selectedDates, dateStr, instance) {
+                    const date = selectedDates[0];
+                    bookingData.date = dateStr;
+                    
+                    // Generate time slots for selected date
+                    if (selectedService.id) {
+                        loadAvailableTimeSlots(dateStr, selectedService.id);
+                        document.getElementById('time-slots-container').classList.remove('hidden');
+                    }
+                }
+            });
+        }
+
+        // Función para cargar horarios disponibles mejorada
+        async function loadAvailableTimeSlots(date, serviceId) {
+            if (!serviceId) {
+                showError('Por favor selecciona un servicio primero');
+                return;
+            }
+
+            const timeSlotsContainer = document.getElementById('time-slots');
+            timeSlotsContainer.innerHTML = '<div class="col-span-3 text-center text-gray-500">Cargando horarios...</div>';
+
+            try {
+                // Cargar horarios disponibles del backend
+                const response = await fetch(`${API_BASE_URL}/available-times?date=${date}&service_id=${serviceId}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const timeSlots = await response.json();
+                
+                // Cargar citas existentes para mostrar ocupadas
+                const appointmentsResponse = await fetch(`${API_BASE_URL}/appointments?date=${date}`);
+                let bookedSlots = [];
+                if (appointmentsResponse.ok) {
+                    const appointments = await appointmentsResponse.json();
+                    bookedSlots = appointments
+                        .filter(apt => apt.status !== 'cancelled')
+                        .map(apt => apt.appointment_time);
+                }
+                
+                renderTimeSlotsWithStatus(timeSlots, bookedSlots, date);
+            } catch (error) {
+                console.error('Error loading time slots:', error);
+                timeSlotsContainer.innerHTML = '<div class="col-span-3 text-center text-red-500">Error al cargar horarios. <button onclick="loadAvailableTimeSlots(\'' + date + '\', ' + serviceId + ')" class="underline">Reintentar</button></div>';
+            }
+        }
+
+        // Función para renderizar horarios con estado visual
+        function renderTimeSlotsWithStatus(availableSlots, bookedSlots, date) {
+            const timeSlotsContainer = document.getElementById('time-slots');
+            timeSlotsContainer.innerHTML = '';
+            
+            // Obtener horarios de negocio para este día
+            const selectedDate = new Date(date);
+            const dayOfWeek = selectedDate.getDay();
+            const hours = businessHours[dayOfWeek];
+            
+            if (!hours || hours.is_closed) {
+                timeSlotsContainer.innerHTML = '<p class="col-span-3 text-center text-gray-500">Cerrado este día</p>';
+                return;
+            }
+            
+            // Generar todos los slots posibles del día
+            const allSlots = generateAllTimeSlots(hours.opening_time, hours.closing_time);
+            
+            if (allSlots.length === 0) {
+                timeSlotsContainer.innerHTML = '<p class="col-span-3 text-center text-gray-500">No hay horarios disponibles para esta fecha</p>';
+                return;
+            }
+
+            allSlots.forEach(timeString => {
+                const slot = document.createElement('button');
+                slot.type = 'button';
+                
+                const isAvailable = availableSlots.includes(timeString);
+                const isBooked = bookedSlots.includes(timeString);
+                
+                if (isBooked) {
+                    // Slot ocupado - no clickeable, opaco
+                    slot.className = 'bg-gray-300 border border-gray-400 rounded-lg py-2 px-3 text-center text-gray-500 opacity-50 cursor-not-allowed';
+                    slot.textContent = timeString + ' (Ocupado)';
+                    slot.disabled = true;
+                } else if (isAvailable) {
+                    // Slot disponible - clickeable
+                    slot.className = 'bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg py-2 px-3 text-center transition-all cursor-pointer';
+                    slot.textContent = timeString;
+                    
+                    slot.addEventListener('click', function() {
+                        // Remove active class from all available slots
+                        document.querySelectorAll('#time-slots button:not([disabled])').forEach(btn => {
+                            btn.classList.remove('bg-yellow-100', 'border-yellow-500');
+                        });
+                        
+                        // Add active class to selected slot
+                        this.classList.add('bg-yellow-100', 'border-yellow-500');
+                        
+                        bookingData.time = timeString;
+                    });
+                } else {
+                    // Slot no disponible - opaco pero no marcado como ocupado
+                    slot.className = 'bg-gray-200 border border-gray-300 rounded-lg py-2 px-3 text-center text-gray-400 opacity-60 cursor-not-allowed';
+                    slot.textContent = timeString;
+                    slot.disabled = true;
+                }
+                
+                timeSlotsContainer.appendChild(slot);
+            });
+        }
+
+        // Generar todos los slots de tiempo posibles
+        function generateAllTimeSlots(openingTime, closingTime) {
+            const slots = [];
+            const start = new Date(`2000-01-01T${openingTime}`);
+            const end = new Date(`2000-01-01T${closingTime}`);
+            const slotDuration = 30; // minutos
+            
+            let current = new Date(start);
+            
+            while (current < end) {
+                const timeString = current.toTimeString().slice(0, 5);
+                slots.push(timeString);
+                current.setMinutes(current.getMinutes() + slotDuration);
+            }
+            
+            return slots;
+        }
+        
+        // Select service function - ACTUALIZADA
+        function selectService(id, name, price, duration) {
+            selectedService.id = id;
+            selectedService.name = name;
+            selectedService.price = price;
+            selectedService.duration = duration;
+            
+            // Update UI
+            document.getElementById('selected-service-name').textContent = `Servicio: ${name}`;
+            document.getElementById('selected-service-price').textContent = `Precio: $${price} MXN`;
+            document.getElementById('selected-service-duration').textContent = `Duración: ${duration} min`;
+            
+            // Reset time slots if date is already selected
+            if (bookingData.date) {
+                loadAvailableTimeSlots(bookingData.date, id);
+                document.getElementById('time-slots-container').classList.remove('hidden');
+            }
+            
+            // Show booking form
+            document.getElementById('services').classList.add('hidden');
+            document.getElementById('booking-form').classList.remove('hidden');
+        }
+        
+        // Close booking form
+        function closeBookingForm() {
+            document.getElementById('booking-form').classList.add('hidden');
+            document.getElementById('services').classList.remove('hidden');
+            
+            // Reset data
+            selectedService = { id: '', name: '', price: 0, duration: 0 };
+            bookingData = { date: '', time: '', customerName: '', phone: '' };
+            
+            // Reset form
+            document.getElementById('booking-date').value = '';
+            document.getElementById('time-slots-container').classList.add('hidden');
+            document.getElementById('full-name').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('policy-check').checked = false;
+        }
+        
+        // Process payment (actualizada para usar el backend)
+        async function processPayment() {
+            // Validate form
+            const fullName = document.getElementById('full-name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const date = bookingData.date;
+            const time = bookingData.time;
+            const policyCheck = document.getElementById('policy-check').checked;
+            
+            if (!fullName || !phone || !date || !time || !policyCheck) {
+                showError('Por favor completa todos los campos obligatorios y acepta las políticas.');
+                return;
+            }
+
+            if (!selectedService.id) {
+                showError('Error: No se ha seleccionado un servicio válido.');
+                return;
+            }
+            
+            // Save booking data
+            bookingData.customerName = fullName;
+            bookingData.phone = phone;
+
+            // Deshabilitar botón mientras se procesa
+            const paymentBtn = document.querySelector('button[onclick="processPayment()"]');
+            const originalText = paymentBtn.textContent;
+            paymentBtn.disabled = true;
+            paymentBtn.textContent = 'Procesando...';
+
+            // Crear la cita en el backend
+            try {
+                const appointmentData = {
+                    service_id: selectedService.id,
+                    customer_name: fullName,
+                    customer_phone: phone,
+                    appointment_date: date,
+                    appointment_time: time,
+                    deposit_amount: 50.00,
+                    notes: `Reserva desde web - Anticipo: $50 MXN`
+                };
+
+                const response = await fetch(`${API_BASE_URL}/appointments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(appointmentData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Mostrar confirmación
+                    const formattedDate = new Date(date).toLocaleDateString('es-MX', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                    
+                    // Update confirmation UI
+                    document.getElementById('confirmation-service').textContent = `Servicio: ${selectedService.name}`;
+                    document.getElementById('confirmation-date').textContent = `Fecha: ${formattedDate}`;
+                    document.getElementById('confirmation-time').textContent = `Hora: ${time}`;
+                    document.getElementById('confirmation-total').textContent = `$${selectedService.price} MXN`;
+                    
+                    // Show confirmation
+                    document.getElementById('booking-form').classList.add('hidden');
+                    document.getElementById('confirmation').classList.remove('hidden');
+                } else {
+                    if (result.error === 'Time slot not available') {
+                        showError('Lo sentimos, este horario ya no está disponible. Por favor selecciona otro horario.');
+                        // Recargar horarios disponibles
+                        loadAvailableTimeSlots(date, selectedService.id);
+                    } else {
+                        showError('Error al procesar la reserva: ' + (result.error || 'Error desconocido'));
+                    }
+                }
+            } catch (error) {
+                console.error('Error creating appointment:', error);
+                showError('Error de conexión. Por favor verifica tu conexión a internet e intenta de nuevo.');
+            } finally {
+                // Rehabilitar botón
+                paymentBtn.disabled = false;
+                paymentBtn.textContent = originalText;
+            }
+        }
+
+        // Función para hacer otra cita
+        function makeAnotherAppointment() {
+            // Ocultar confirmación y mostrar servicios
+            document.getElementById('confirmation').classList.add('hidden');
+            document.getElementById('services').classList.remove('hidden');
+            
+            // Reset data completamente
+            selectedService = { id: '', name: '', price: 0, duration: 0 };
+            bookingData = { date: '', time: '', customerName: '', phone: '' };
+            
+            // Reset form
+            document.getElementById('booking-date').value = '';
+            document.getElementById('time-slots-container').classList.add('hidden');
+            document.getElementById('full-name').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('policy-check').checked = false;
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Función para mostrar errores
+        function showError(message) {
+            alert(message); // Por ahora usamos alert, se puede mejorar con un modal
+        }
+        
+        // Add to calendar function
+        function addToCalendar() {
+            const startDate = new Date(`${bookingData.date}T${bookingData.time}`);
+            const endDate = new Date(startDate.getTime() + selectedService.duration * 60000);
+            
+            const event = {
+                title: `${selectedService.name} - Montana Barber Shop`,
+                start: startDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z',
+                end: endDate.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z',
+                description: `Cita en Montana Barber Shop para ${selectedService.name}`
+            };
+            
+            const icsData = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Montana Barber Shop//ES
+BEGIN:VEVENT
+UID:${Date.now()}@montanabarber.com
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART:${event.start}
+DTEND:${event.end}
+SUMMARY:${event.title}
+DESCRIPTION:${event.description}
+END:VEVENT
+END:VCALENDAR`;
+            
+            const blob = new Blob([icsData], { type: 'text/calendar' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'cita-montana-barber.ics';
+            link.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // Send WhatsApp confirmation
+        function sendWhatsAppConfirmation() {
+            const formattedDate = new Date(bookingData.date).toLocaleDateString('es-MX', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            const message = `Hola ${bookingData.customerName}, tu cita en Montana Barber Shop ha sido confirmada para el ${formattedDate} a las ${bookingData.time} para el servicio ${selectedService.name}.`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/52899128124?text=${encodedMessage}`, '_blank');
+        }
+</script>
+</body>
+</html>
