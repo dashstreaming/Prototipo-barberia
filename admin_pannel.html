@@ -46,6 +46,37 @@
     </style>
 </head>
 <body class="min-h-screen">
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-slate-800 rounded-lg w-full max-w-md mx-4 border border-slate-700">
+        <div class="p-6">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-amber-500 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-cut text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold">Montana Barber Shop</h2>
+                <p class="text-slate-400">Panel de Administración</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Usuario</label>
+                    <input type="text" id="username" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 w-full" placeholder="admin" required>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Contraseña</label>
+                    <input type="password" id="password" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3 w-full" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 rounded-lg font-medium transition-colors">
+                    Iniciar Sesión
+                </button>
+            </form>
+            
+            <div id="login-error" class="mt-4 text-red-400 text-sm text-center hidden"></div>
+        </div>
+    </div>
+</div>
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
         <div class="sidebar bg-slate-900 text-white w-64 flex-shrink-0 flex flex-col border-r border-slate-700">
@@ -865,62 +896,382 @@ Con -24 h o no-show: el anticipo se pierde.</textarea>
     </div>
 
     <script>
-        // Navigation
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
+        const API_BASE_URL = 'http://localhost:5000/api';
+        let currentUser = null;
+        let currentAppointments = [];
+        let currentServices = [];
+
+        // Verificar autenticación al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            setupEventListeners();
+        });
+
+        // Función para verificar autenticación
+        async function checkAuthentication() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/check-auth`);
+                const result = await response.json();
                 
-                // Update active nav item
-                document.querySelectorAll('.nav-item').forEach(nav => {
-                    nav.classList.remove('bg-amber-500/20', 'border-r-4', 'border-amber-500', 'text-white');
-                    nav.classList.add('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
+                if (result.authenticated) {
+                    currentUser = { username: result.username };
+                    document.getElementById('login-modal').classList.add('hidden');
+                    initializeAdmin();
+                } else {
+                    document.getElementById('login-modal').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error checking authentication:', error);
+                document.getElementById('login-modal').classList.remove('hidden');
+            }
+        }
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Login form
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+            
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update active nav item
+                    document.querySelectorAll('.nav-item').forEach(nav => {
+                        nav.classList.remove('bg-amber-500/20', 'border-r-4', 'border-amber-500', 'text-white');
+                        nav.classList.add('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
+                    });
+                    this.classList.add('bg-amber-500/20', 'border-r-4', 'border-amber-500', 'text-white');
+                    this.classList.remove('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
+                    
+                    // Show corresponding content
+                    const target = this.getAttribute('href').substring(1);
+                    document.querySelectorAll('.page-content').forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.getElementById(`${target}-content`).classList.remove('hidden');
+                    
+                    // Update page title
+                    document.getElementById('page-title').textContent = this.querySelector('.nav-text').textContent;
+                    
+                    // Load data for specific sections
+                    loadSectionData(target);
                 });
-                this.classList.add('bg-amber-500/20', 'border-r-4', 'border-amber-500', 'text-white');
-                this.classList.remove('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
-                
-                // Show corresponding content
-                const target = this.getAttribute('href').substring(1);
-                document.querySelectorAll('.page-content').forEach(content => {
-                    content.classList.add('hidden');
-                });
-                document.getElementById(`${target}-content`).classList.remove('hidden');
-                
-                // Update page title
-                document.getElementById('page-title').textContent = this.querySelector('.nav-text').textContent;
             });
-        });
 
-        // Toggle sidebar
-        document.querySelector('.menu-toggle').addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('sidebar-collapsed');
-        });
+            // Toggle sidebar
+            document.querySelector('.menu-toggle').addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.toggle('sidebar-collapsed');
+            });
 
-        // Modal toggles
-        document.getElementById('new-appointment-btn').addEventListener('click', function() {
-            document.getElementById('new-appointment-modal').classList.remove('hidden');
-        });
+            // Modal event listeners
+            setupModalListeners();
+        }
 
-        document.getElementById('close-appointment-modal').addEventListener('click', function() {
-            document.getElementById('new-appointment-modal').classList.add('hidden');
-        });
+        // Manejar login
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('login-error');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    currentUser = result.user;
+                    document.getElementById('login-modal').classList.add('hidden');
+                    errorDiv.classList.add('hidden');
+                    initializeAdmin();
+                } else {
+                    errorDiv.textContent = result.error || 'Error de autenticación';
+                    errorDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                errorDiv.textContent = 'Error de conexión';
+                errorDiv.classList.remove('hidden');
+            }
+        }
 
-        document.getElementById('cancel-appointment-modal').addEventListener('click', function() {
-            document.getElementById('new-appointment-modal').classList.add('hidden');
-        });
+        // Inicializar panel de administración
+        async function initializeAdmin() {
+            loadDashboardData();
+        }
 
-        document.getElementById('new-service-btn').addEventListener('click', function() {
-            document.getElementById('new-service-modal').classList.remove('hidden');
-        });
+        // Cargar datos según la sección
+        async function loadSectionData(section) {
+            switch(section) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'appointments':
+                    loadAppointments();
+                    break;
+                case 'services':
+                    loadServices();
+                    break;
+                case 'settings':
+                    loadSettings();
+                    break;
+            }
+        }
 
-        document.getElementById('close-service-modal').addEventListener('click', function() {
-            document.getElementById('new-service-modal').classList.add('hidden');
-        });
+        // Cargar datos del dashboard
+        async function loadDashboardData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/dashboard/stats`);
+                const stats = await response.json();
+                
+                // Actualizar estadísticas
+                updateDashboardStats(stats);
+                updateUpcomingAppointments(stats.upcoming_today);
+                
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showToast('error', 'Error', 'No se pudieron cargar las estadísticas');
+            }
+        }
 
-        document.getElementById('cancel-service-modal').addEventListener('click', function() {
-            document.getElementById('new-service-modal').classList.add('hidden');
-        });
+        // Actualizar estadísticas del dashboard
+        function updateDashboardStats(stats) {
+            // Citas de hoy
+            const todayCard = document.querySelector('.grid .bg-slate-800:nth-child(1)');
+            todayCard.querySelector('h3').textContent = stats.today.total || 0;
+            todayCard.querySelector('.border-t .text-white:nth-child(1)').textContent = stats.today.completed || 0;
+            todayCard.querySelector('.border-t .text-white:nth-child(2)').textContent = stats.today.pending || 0;
+            
+            // Citas de la semana
+            const weekCard = document.querySelector('.grid .bg-slate-800:nth-child(2)');
+            weekCard.querySelector('h3').textContent = stats.week.total || 0;
+            weekCard.querySelector('.border-t .text-white:nth-child(1)').textContent = stats.week.completed || 0;
+            weekCard.querySelector('.border-t .text-white:nth-child(2)').textContent = stats.week.pending || 0;
+            
+            // Citas del mes
+            const monthCard = document.querySelector('.grid .bg-slate-800:nth-child(3)');
+            monthCard.querySelector('h3').textContent = stats.month.total || 0;
+            monthCard.querySelector('.border-t .text-white:nth-child(1)').textContent = stats.month.completed || 0;
+            monthCard.querySelector('.border-t .text-white:nth-child(2)').textContent = stats.month.cancelled || 0;
+        }
 
-        // Confirmation modal
+        // Actualizar próximas citas
+        function updateUpcomingAppointments(appointments) {
+            const tbody = document.querySelector('#dashboard-content tbody');
+            tbody.innerHTML = '';
+            
+            if (appointments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-3 text-center text-slate-400">No hay citas pendientes para hoy</td></tr>';
+                return;
+            }
+            
+            appointments.forEach(appointment => {
+                const row = `
+                    <tr>
+                        <td class="px-4 py-3 whitespace-nowrap">${appointment.customer_name}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">${appointment.service_name}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">${appointment.appointment_time}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">${appointment.customer_phone}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Cargar citas
+        async function loadAppointments() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/appointments`);
+                currentAppointments = await response.json();
+                renderAppointmentsTable();
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+                showToast('error', 'Error', 'No se pudieron cargar las citas');
+            }
+        }
+
+        // Renderizar tabla de citas
+        function renderAppointmentsTable() {
+            const tbody = document.querySelector('#appointments-content tbody');
+            tbody.innerHTML = '';
+            
+            currentAppointments.forEach(appointment => {
+                const statusClass = getStatusClass(appointment.status);
+                const statusText = getStatusText(appointment.status);
+                const formattedDate = new Date(appointment.appointment_date).toLocaleDateString('es-MX');
+                
+                const row = `
+                    <tr>
+                        <td class="px-4 py-3 whitespace-nowrap">${formattedDate}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">${appointment.customer_name}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">${appointment.service_name}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">${appointment.appointment_time}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs rounded-full ${statusClass}">${statusText}</span>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="flex space-x-2">
+                                <button onclick="editAppointment(${appointment.id})" class="text-blue-400 hover:text-blue-300">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="updateAppointmentStatus(${appointment.id}, 'completed')" class="text-green-400 hover:text-green-300">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button onclick="updateAppointmentStatus(${appointment.id}, 'cancelled')" class="text-red-400 hover:text-red-300">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Cargar servicios
+        async function loadServices() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/services`);
+                currentServices = await response.json();
+                renderServicesTable();
+            } catch (error) {
+                console.error('Error loading services:', error);
+                showToast('error', 'Error', 'No se pudieron cargar los servicios');
+            }
+        }
+
+        // Renderizar tabla de servicios
+        function renderServicesTable() {
+            const tbody = document.querySelector('#services-content tbody');
+            tbody.innerHTML = '';
+            
+            currentServices.forEach(service => {
+                const statusClass = service.active ? 'bg-green-500/20 text-green-500' : 'bg-gray-500/20 text-gray-500';
+                const statusText = service.active ? 'Activo' : 'Inactivo';
+                
+                const row = `
+                    <tr>
+                        <td class="px-4 py-3 whitespace-nowrap">${service.name}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">$${service.price} MXN</td>
+                        <td class="px-4 py-3 whitespace-nowrap">${service.duration} min</td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs rounded-full ${statusClass}">${statusText}</span>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="flex space-x-2">
+                                <button onclick="editService(${service.id})" class="text-blue-400 hover:text-blue-300">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteService(${service.id})" class="text-red-400 hover:text-red-300">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Funciones auxiliares para estados
+        function getStatusClass(status) {
+            const classes = {
+                'pending': 'bg-yellow-500/20 text-yellow-500',
+                'confirmed': 'bg-blue-500/20 text-blue-500',
+                'completed': 'bg-green-500/20 text-green-500',
+                'cancelled': 'bg-red-500/20 text-red-500',
+                'no-show': 'bg-gray-500/20 text-gray-500'
+            };
+            return classes[status] || 'bg-gray-500/20 text-gray-500';
+        }
+
+        function getStatusText(status) {
+            const texts = {
+                'pending': 'Pendiente',
+                'confirmed': 'Confirmada',
+                'completed': 'Completada',
+                'cancelled': 'Cancelada',
+                'no-show': 'No-show'
+            };
+            return texts[status] || 'Desconocido';
+        }
+
+        // Actualizar estado de cita
+        async function updateAppointmentStatus(appointmentId, newStatus) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/appointments/${appointmentId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                
+                if (response.ok) {
+                    showToast('success', 'Éxito', 'Estado actualizado correctamente');
+                    loadAppointments(); // Recargar la tabla
+                    if (document.getElementById('dashboard-content').style.display !== 'none') {
+                        loadDashboardData(); // Actualizar dashboard si está visible
+                    }
+                } else {
+                    throw new Error('Error al actualizar estado');
+                }
+            } catch (error) {
+                console.error('Error updating appointment status:', error);
+                showToast('error', 'Error', 'No se pudo actualizar el estado');
+            }
+        }
+
+        // Configurar listeners de modales
+        function setupModalListeners() {
+            // New appointment modal
+            document.getElementById('new-appointment-btn').addEventListener('click', function() {
+                document.getElementById('new-appointment-modal').classList.remove('hidden');
+            });
+
+            document.getElementById('close-appointment-modal').addEventListener('click', function() {
+                document.getElementById('new-appointment-modal').classList.add('hidden');
+            });
+
+            document.getElementById('cancel-appointment-modal').addEventListener('click', function() {
+                document.getElementById('new-appointment-modal').classList.add('hidden');
+            });
+
+            // New service modal
+            document.getElementById('new-service-btn').addEventListener('click', function() {
+                document.getElementById('new-service-modal').classList.remove('hidden');
+            });
+
+            document.getElementById('close-service-modal').addEventListener('click', function() {
+                document.getElementById('new-service-modal').classList.add('hidden');
+            });
+
+            document.getElementById('cancel-service-modal').addEventListener('click', function() {
+                document.getElementById('new-service-modal').classList.add('hidden');
+            });
+
+            // Confirmation modal
+            document.getElementById('close-confirmation-modal').addEventListener('click', function() {
+                document.getElementById('confirmation-modal').classList.add('hidden');
+            });
+
+            document.getElementById('cancel-confirmation-modal').addEventListener('click', function() {
+                document.getElementById('confirmation-modal').classList.add('hidden');
+            });
+        }
+
+        // Funciones de modal de confirmación
         function showConfirmation(title, message, showDepositOptions = false) {
             document.getElementById('confirmation-title').textContent = title;
             document.getElementById('confirmation-message').textContent = message;
@@ -928,18 +1279,53 @@ Con -24 h o no-show: el anticipo se pierde.</textarea>
             document.getElementById('confirmation-modal').classList.remove('hidden');
         }
 
-        document.getElementById('close-confirmation-modal').addEventListener('click', function() {
-            document.getElementById('confirmation-modal').classList.add('hidden');
-        });
+        // Editar servicio
+        function editService(serviceId) {
+            // Implementar lógica de edición
+            showToast('info', 'Información', 'Función de edición en desarrollo');
+        }
 
-        document.getElementById('cancel-confirmation-modal').addEventListener('click', function() {
-            document.getElementById('confirmation-modal').classList.add('hidden');
-        });
+        // Eliminar servicio
+        async function deleteService(serviceId) {
+            if (confirm('¿Estás seguro de que deseas eliminar este servicio?')) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/services/${serviceId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        showToast('success', 'Éxito', 'Servicio eliminado correctamente');
+                        loadServices();
+                    } else {
+                        throw new Error('Error al eliminar servicio');
+                    }
+                } catch (error) {
+                    console.error('Error deleting service:', error);
+                    showToast('error', 'Error', 'No se pudo eliminar el servicio');
+                }
+            }
+        }
 
-        document.getElementById('confirm-action').addEventListener('click', function() {
-            document.getElementById('confirmation-modal').classList.add('hidden');
-            showToast('success', 'Acción completada', 'La acción se realizó correctamente.');
-        });
+        // Editar cita
+        function editAppointment(appointmentId) {
+            // Implementar lógica de edición
+            showToast('info', 'Información', 'Función de edición en desarrollo');
+        }
+
+        // Cargar configuraciones
+        async function loadSettings() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/settings`);
+                const settings = await response.json();
+                
+                // Aquí puedes actualizar los campos de configuración con los datos del backend
+                console.log('Settings loaded:', settings);
+                
+            } catch (error) {
+                console.error('Error loading settings:', error);
+                showToast('error', 'Error', 'No se pudieron cargar las configuraciones');
+            }
+        }
 
         // Toast notification
         function showToast(type, title, message) {
@@ -949,7 +1335,7 @@ Con -24 h o no-show: el anticipo se pierde.</textarea>
             const toastMessage = document.getElementById('toast-message');
             
             // Set icon and color based on type
-            let iconClass, bgColor;
+            let iconClass;
             switch(type) {
                 case 'success':
                     iconClass = 'fas fa-check-circle text-green-500';
@@ -983,32 +1369,6 @@ Con -24 h o no-show: el anticipo se pierde.</textarea>
                 toast.classList.add('hidden');
             }, 3000);
         }
-
-        // Simulate actions that would trigger toasts
-        document.querySelectorAll('button[class*="text-red-400"]').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (this.querySelector('.fa-trash')) {
-                    showConfirmation('Eliminar servicio', '¿Estás seguro de que deseas eliminar este servicio?');
-                } else if (this.querySelector('.fa-times')) {
-                    showConfirmation('Cancelar cita', '¿Estás seguro de que deseas cancelar esta cita?', true);
-                }
-            });
-        });
-
-        document.querySelectorAll('button[class*="text-green-400"]').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                showToast('success', 'Cita completada', 'La cita ha sido marcada como completada.');
-            });
-        });
-
-        document.querySelectorAll('button[class*="text-blue-400"]').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                document.getElementById('new-appointment-modal').classList.remove('hidden');
-            });
-        });
-    </script>
+</script>
 </body>
 </html>
