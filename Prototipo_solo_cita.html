@@ -3,1012 +3,470 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Montana Barber Shop - Admin</title>
+    <title>Montana Barber Shop - Reserva tu cita</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #f8f8f8;
         }
-        .sidebar {
-            transition: all 0.3s;
+        
+        .gold-text {
+            color: #D4AF37;
         }
-        .sidebar-collapsed {
-            width: 80px;
+        
+        .gold-bg {
+            background-color: #D4AF37;
         }
-        .sidebar-collapsed .nav-text {
-            display: none;
+        
+        .gold-border {
+            border-color: #D4AF37;
         }
-        .sidebar-collapsed .logo-text {
-            display: none;
+        
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
-        .sidebar-collapsed .menu-toggle {
-            justify-content: center;
+        
+        .transition-all {
+            transition: all 0.3s ease;
         }
-        .toast {
-            animation: slideIn 0.5s forwards, fadeOut 0.5s 3s forwards;
+        
+        .flatpickr-calendar {
+            font-family: 'Poppins', sans-serif !important;
         }
-        @keyframes slideIn {
-            from { transform: translateX(100%); }
-            to { transform: translateX(0); }
+        
+        .whatsapp-btn:hover {
+            background-color: #25D366;
+            color: white;
         }
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
+        
+        .facebook-btn:hover {
+            background-color: #3b5998;
+            color: white;
         }
-        .fc-daygrid-event {
-            white-space: normal !important;
-            word-wrap: break-word !important;
+        
+        .instagram-btn:hover {
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D, #F56040, #F77737, #FCAF45, #FFDC80);
+            color: white;
         }
     </style>
 </head>
-<body class="min-h-screen">
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <div class="sidebar bg-slate-900 text-white w-64 flex-shrink-0 flex flex-col border-r border-slate-700">
-            <div class="p-4 flex items-center justify-between border-b border-slate-700">
-                <div class="flex items-center">
-                    <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center">
-                        <i class="fas fa-cut text-xl"></i>
-                    </div>
-                    <span class="logo-text ml-3 text-xl font-bold">Montana Barber</span>
+<body class="bg-white">
+    <!-- Header -->
+    <header class="bg-black text-white sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center mr-3">
+                    <img src="https://i.imgur.com/qTy1zlY.png" alt="Montana Barber Shop Logo" class="w-full h-full object-contain">
                 </div>
-                <button class="menu-toggle text-slate-400 hover:text-white">
-                    <i class="fas fa-bars"></i>
-                </button>
+                <h1 class="text-xl font-bold gold-text">MONTANA <span class="text-white">BARBER SHOP</span></h1>
             </div>
-            <nav class="flex-1 overflow-y-auto py-4">
-                <ul>
-                    <li>
-                        <a href="#dashboard" class="nav-item flex items-center px-4 py-3 text-white bg-amber-500/20 border-r-4 border-amber-500">
-                            <i class="fas fa-home"></i>
-                            <span class="nav-text ml-3">Inicio</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#appointments" class="nav-item flex items-center px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span class="nav-text ml-3">Citas</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#services" class="nav-item flex items-center px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800">
-                            <i class="fas fa-cut"></i>
-                            <span class="nav-text ml-3">Servicios</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#settings" class="nav-item flex items-center px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800">
-                            <i class="fas fa-cog"></i>
-                            <span class="nav-text ml-3">Configuración</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="p-4 border-t border-slate-700">
-                <div class="flex items-center">
-                    <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center">
-                        <i class="fas fa-user"></i>
+            <a href="tel:+52899128124" class="bg-white text-black px-4 py-2 rounded-full font-medium flex items-center hover:bg-gray-200 transition-all">
+                <i class="fas fa-phone mr-2 gold-text"></i> Llamar
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="mb-12 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Corte de cabello profesional</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">Reserva tu cita en nuestra barbería premium y luce tu mejor estilo</p>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="mb-12">
+            <h3 class="text-2xl font-bold mb-6 text-center gold-text">Nuestros Servicios</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Service 1 -->
+                <div class="service-card bg-white rounded-lg shadow-md p-6 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Corte Clásico</h4>
+                        <span class="text-lg font-bold gold-text">$200 MXN</span>
                     </div>
-                    <div class="ml-3">
-                        <div class="text-sm font-medium">Admin</div>
-                        <div class="text-xs text-slate-400">Barbero</div>
+                    <p class="text-gray-600 mb-4">Corte tradicional con tijera y máquina, incluye diseño básico.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 45 min</span>
+                        <button onclick="selectService('Corte Clásico', 200, 45)" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card bg-white rounded-lg shadow-md p-6 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Corte Premium</h4>
+                        <span class="text-lg font-bold gold-text">$300 MXN</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Corte detallado con acabado perfecto, incluye diseño y arreglo de barba.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 60 min</span>
+                        <button onclick="selectService('Corte Premium', 300, 60)" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card bg-white rounded-lg shadow-md p-6 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Afeitado Clásico</h4>
+                        <span class="text-lg font-bold gold-text">$250 MXN</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Afeitado tradicional con navaja, incluye toallas calientes y productos premium.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 40 min</span>
+                        <button onclick="selectService('Afeitado Clásico', 250, 40)" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="service-card bg-white rounded-lg shadow-md p-6 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Corte y Barba</h4>
+                        <span class="text-lg font-bold gold-text">$350 MXN</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Combo completo: corte premium más arreglo de barba con acabado profesional.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 75 min</span>
+                        <button onclick="selectService('Corte y Barba', 350, 75)" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="service-card bg-white rounded-lg shadow-md p-6 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Tinte de Barba</h4>
+                        <span class="text-lg font-bold gold-text">$180 MXN</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Tinte profesional para barba con productos de alta calidad.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 30 min</span>
+                        <button onclick="selectService('Tinte de Barba', 180, 30)" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="service-card bg-white rounded-lg shadow-md p-6 transition-all">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="text-xl font-bold">Servicio Infantil</h4>
+                        <span class="text-lg font-bold gold-text">$150 MXN</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">Corte especial para niños con ambiente amigable y diseño a elección.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i> 35 min</span>
+                        <button onclick="selectService('Servicio Infantil', 150, 35)" class="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-all">
+                            Reservar
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Main Content -->
-        <div class="flex-1 overflow-auto">
-            <!-- Top Bar -->
-            <header class="bg-slate-800 border-b border-slate-700 p-4 flex justify-between items-center">
-                <h1 class="text-xl font-semibold" id="page-title">Dashboard</h1>
-                <div class="flex items-center space-x-4">
-                    <button class="p-2 rounded-full hover:bg-slate-700">
-                        <i class="fas fa-bell text-slate-300"></i>
-                    </button>
-                    <div class="w-px h-6 bg-slate-600"></div>
-                    <div class="flex items-center">
-                        <span class="text-sm mr-2 hidden md:inline">Admin</span>
-                        <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center">
-                            <i class="fas fa-user text-sm"></i>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Page Content -->
-            <main class="p-4">
-                <!-- Dashboard Section -->
-                <section id="dashboard-content" class="page-content">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-slate-400 text-sm">Citas hoy</p>
-                                    <h3 class="text-2xl font-bold mt-1">8</h3>
-                                </div>
-                                <div class="p-2 rounded-full bg-amber-500/20 text-amber-500">
-                                    <i class="fas fa-calendar-day"></i>
-                                </div>
-                            </div>
-                            <div class="mt-4 pt-4 border-t border-slate-700">
-                                <p class="text-sm text-slate-400">Completadas: <span class="text-white">5</span></p>
-                                <p class="text-sm text-slate-400">Pendientes: <span class="text-white">3</span></p>
-                            </div>
-                        </div>
-                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-slate-400 text-sm">Citas esta semana</p>
-                                    <h3 class="text-2xl font-bold mt-1">24</h3>
-                                </div>
-                                <div class="p-2 rounded-full bg-blue-500/20 text-blue-500">
-                                    <i class="fas fa-calendar-week"></i>
-                                </div>
-                            </div>
-                            <div class="mt-4 pt-4 border-t border-slate-700">
-                                <p class="text-sm text-slate-400">Completadas: <span class="text-white">18</span></p>
-                                <p class="text-sm text-slate-400">Pendientes: <span class="text-white">6</span></p>
-                            </div>
-                        </div>
-                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="text-slate-400 text-sm">Citas este mes</p>
-                                    <h3 class="text-2xl font-bold mt-1">96</h3>
-                                </div>
-                                <div class="p-2 rounded-full bg-purple-500/20 text-purple-500">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
-                            </div>
-                            <div class="mt-4 pt-4 border-t border-slate-700">
-                                <p class="text-sm text-slate-400">Completadas: <span class="text-white">82</span></p>
-                                <p class="text-sm text-slate-400">Canceladas: <span class="text-white">5</span></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-800 rounded-lg p-4 border border-slate-700 mb-6">
-                        <h2 class="text-lg font-semibold mb-4">Próximas citas</h2>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-slate-700">
-                                <thead>
-                                    <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Cliente</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Servicio</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Hora</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Teléfono</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-700">
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">Juan Pérez</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Corte clásico</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">10:00 AM</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">555-123-4567</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">Carlos López</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Afeitado</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">11:30 AM</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">555-987-6543</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">Miguel Ángel</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Corte + Barba</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">1:00 PM</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">555-456-7890</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">Roberto Díaz</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Corte moderno</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">2:30 PM</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">555-789-0123</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">Luis Méndez</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Corte clásico</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">4:00 PM</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">555-234-5678</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Appointments Section -->
-                <section id="appointments-content" class="page-content hidden">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-lg font-semibold">Gestión de Citas</h2>
-                        <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg flex items-center" id="new-appointment-btn">
-                            <i class="fas fa-plus mr-2"></i> Nueva Cita
-                        </button>
-                    </div>
-
-                    <div class="bg-slate-800 rounded-lg p-4 border border-slate-700 mb-6">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                            <div class="flex space-x-2 mb-2 md:mb-0">
-                                <button class="px-3 py-1 bg-slate-700 rounded-lg text-sm">Día</button>
-                                <button class="px-3 py-1 bg-slate-700 rounded-lg text-sm">Semana</button>
-                                <button class="px-3 py-1 bg-amber-500 text-white rounded-lg text-sm">Mes</button>
-                                <button class="px-3 py-1 bg-slate-700 rounded-lg text-sm">Lista</button>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <div class="relative">
-                                    <input type="date" class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                </div>
-                                <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                    <option>Todos los servicios</option>
-                                    <option>Corte clásico</option>
-                                    <option>Afeitado</option>
-                                    <option>Corte + Barba</option>
-                                </select>
-                                <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                    <option>Todos los estados</option>
-                                    <option>Pendiente</option>
-                                    <option>Completada</option>
-                                    <option>Cancelada</option>
-                                    <option>No-show</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div id="calendar" class="h-96">
-                            <!-- Calendar placeholder -->
-                            <div class="text-center py-10 text-slate-400">
-                                <i class="fas fa-calendar-alt text-4xl mb-2"></i>
-                                <p>Calendario de citas</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
-                        <h3 class="text-lg font-semibold mb-4">Lista de Citas</h3>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-slate-700">
-                                <thead>
-                                    <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Fecha</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Cliente</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Servicio</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Hora</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Estado</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-700">
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">15 Jun 2023</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Juan Pérez</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Corte clásico</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">10:00 AM</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span></td>
-                                        <td class="px-4 py-3 whitespace-nowrap">
-                                            <div class="flex space-x-2">
-                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
-                                                <button class="text-green-400 hover:text-green-300"><i class="fas fa-check"></i></button>
-                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-times"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">15 Jun 2023</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Carlos López</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Afeitado</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">11:30 AM</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-yellow-500/20 text-yellow-500">Pendiente</span></td>
-                                        <td class="px-4 py-3 whitespace-nowrap">
-                                            <div class="flex space-x-2">
-                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
-                                                <button class="text-green-400 hover:text-green-300"><i class="fas fa-check"></i></button>
-                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-times"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">15 Jun 2023</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Miguel Ángel</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Corte + Barba</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">1:00 PM</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-500">Completada</span></td>
-                                        <td class="px-4 py-3 whitespace-nowrap">
-                                            <div class="flex space-x-2">
-                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
-                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-times"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">14 Jun 2023</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Roberto Díaz</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Corte moderno</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">2:30 PM</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-red-500/20 text-red-500">Cancelada</span></td>
-                                        <td class="px-4 py-3 whitespace-nowrap">
-                                            <div class="flex space-x-2">
-                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">13 Jun 2023</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Luis Méndez</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">Corte clásico</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">4:00 PM</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-gray-500/20 text-gray-500">No-show</span></td>
-                                        <td class="px-4 py-3 whitespace-nowrap">
-                                            <div class="flex space-x-2">
-                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Services Section -->
-                <section id="services-content" class="page-content hidden">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-lg font-semibold">Servicios</h2>
-                        <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg flex items-center" id="new-service-btn">
-                            <i class="fas fa-plus mr-2"></i> Nuevo Servicio
-                        </button>
-                    </div>
-
-                    <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-slate-700">
-                                <thead>
-                                    <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Nombre</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Precio</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Duración</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Estado</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-700">
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">Corte clásico</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">$200 MXN</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">30 min</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-500">Activo</span></td>
-                                        <td class="px-4 py-3 whitespace-nowrap">
-                                            <div class="flex space-x-2">
-                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
-                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">Afeitado</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">$150 MXN</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">20 min</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-500">Activo</span></td>
-                                        <td class="px-4 py-3 whitespace-nowrap">
-                                            <div class="flex space-x-2">
-                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
-                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">Corte + Barba</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">$300 MXN</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">45 min</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-500">Activo</span></td>
-                                        <td class="px-4 py-3 whitespace-nowrap">
-                                            <div class="flex space-x-2">
-                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
-                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">Corte moderno</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">$250 MXN</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">35 min</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-green-500/20 text-green-500">Activo</span></td>
-                                        <td class="px-4 py-3 whitespace-nowrap">
-                                            <div class="flex space-x-2">
-                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
-                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-3 whitespace-nowrap">Tinte de cabello</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">$400 MXN</td>
-                                        <td class="px-4 py-3 whitespace-nowrap">60 min</td>
-                                        <td class="px-4 py-3 whitespace-nowrap"><span class="px-2 py-1 text-xs rounded-full bg-gray-500/20 text-gray-500">Inactivo</span></td>
-                                        <td class="px-4 py-3 whitespace-nowrap">
-                                            <div class="flex space-x-2">
-                                                <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-edit"></i></button>
-                                                <button class="text-red-400 hover:text-red-300"><i class="fas fa-trash"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Settings Section -->
-                <section id="settings-content" class="page-content hidden">
-                    <h2 class="text-lg font-semibold mb-6">Configuración</h2>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Business Hours -->
-                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
-                            <h3 class="text-md font-semibold mb-4">Horario Laboral</h3>
-                            
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between">
-                                    <span>Lunes</span>
-                                    <div class="flex items-center space-x-2">
-                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                            <option>9:00 AM</option>
-                                            <option>10:00 AM</option>
-                                        </select>
-                                        <span>a</span>
-                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                            <option>6:00 PM</option>
-                                            <option>7:00 PM</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span>Martes</span>
-                                    <div class="flex items-center space-x-2">
-                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                            <option>9:00 AM</option>
-                                            <option>10:00 AM</option>
-                                        </select>
-                                        <span>a</span>
-                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                            <option>6:00 PM</option>
-                                            <option>7:00 PM</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span>Miércoles</span>
-                                    <div class="flex items-center space-x-2">
-                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                            <option>9:00 AM</option>
-                                            <option>10:00 AM</option>
-                                        </select>
-                                        <span>a</span>
-                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                            <option>6:00 PM</option>
-                                            <option>7:00 PM</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span>Jueves</span>
-                                    <div class="flex items-center space-x-2">
-                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                            <option>9:00 AM</option>
-                                            <option>10:00 AM</option>
-                                        </select>
-                                        <span>a</span>
-                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                            <option>6:00 PM</option>
-                                            <option>7:00 PM</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span>Viernes</span>
-                                    <div class="flex items-center space-x-2">
-                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                            <option>9:00 AM</option>
-                                            <option>10:00 AM</option>
-                                        </select>
-                                        <span>a</span>
-                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                            <option>6:00 PM</option>
-                                            <option>7:00 PM</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span>Sábado</span>
-                                    <div class="flex items-center space-x-2">
-                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                            <option>9:00 AM</option>
-                                            <option>10:00 AM</option>
-                                        </select>
-                                        <span>a</span>
-                                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-3 py-1 text-sm">
-                                            <option>2:00 PM</option>
-                                            <option>3:00 PM</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span>Domingo</span>
-                                    <div class="flex items-center">
-                                        <span class="text-slate-400">Cerrado</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-4 pt-4 border-t border-slate-700">
-                                <h4 class="text-sm font-semibold mb-2">Días de cierre</h4>
-                                <div class="flex flex-wrap gap-2">
-                                    <span class="bg-slate-700 px-3 py-1 rounded-full text-sm flex items-center">
-                                        1 Enero <button class="ml-2 text-slate-400 hover:text-white"><i class="fas fa-times text-xs"></i></button>
-                                    </span>
-                                    <span class="bg-slate-700 px-3 py-1 rounded-full text-sm flex items-center">
-                                        25 Diciembre <button class="ml-2 text-slate-400 hover:text-white"><i class="fas fa-times text-xs"></i></button>
-                                    </span>
-                                    <button class="text-amber-500 hover:text-amber-400 text-sm flex items-center">
-                                        <i class="fas fa-plus mr-1"></i> Añadir día
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Deposit Settings -->
-                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
-                            <h3 class="text-md font-semibold mb-4">Configuración de Anticipo</h3>
-                            
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-slate-300 mb-1">Monto del anticipo</label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">$</span>
-                                    <input type="number" class="bg-slate-700 border border-slate-600 rounded-lg pl-8 pr-4 py-2 w-full" value="50">
-                                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">MXN</span>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-slate-300 mb-1">Política de anticipos</label>
-                                <textarea class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full h-32">Con +24 h de anticipación: el anticipo queda como saldo a favor por 30 días.
-Con -24 h o no-show: el anticipo se pierde.</textarea>
-                            </div>
-                        </div>
-
-                        <!-- Booking Rules -->
-                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
-                            <h3 class="text-md font-semibold mb-4">Reglas de Agenda</h3>
-                            
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-300 mb-1">Tiempo mínimo de anticipación</label>
-                                    <select class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
-                                        <option>30 minutos</option>
-                                        <option selected>1 hora</option>
-                                        <option>2 horas</option>
-                                        <option>6 horas</option>
-                                        <option>12 horas</option>
-                                        <option>24 horas</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-300 mb-1">Límite máximo para reservar</label>
-                                    <select class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
-                                        <option>3 días</option>
-                                        <option>5 días</option>
-                                        <option selected>7 días</option>
-                                        <option>14 días</option>
-                                        <option>30 días</option>
-                                    </select>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-300 mb-1">Intervalo de agenda</label>
-                                    <select class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
-                                        <option>15 minutos</option>
-                                        <option selected>30 minutos</option>
-                                        <option>45 minutos</option>
-                                        <option>1 hora</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Reminders -->
-                        <div class="bg-slate-800 rounded-lg p-4 border border-slate-700">
-                            <h3 class="text-md font-semibold mb-4">Recordatorios</h3>
-                            
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h4 class="text-sm font-medium text-slate-300">Recordatorio 24 horas antes</h4>
-                                        <p class="text-xs text-slate-400">Enviar un recordatorio 24 horas antes de la cita</p>
-                                    </div>
-                                    <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" class="sr-only peer" checked>
-                                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-                                    </label>
-                                </div>
-                                
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h4 class="text-sm font-medium text-slate-300">Recordatorio 3 horas antes</h4>
-                                        <p class="text-xs text-slate-400">Enviar un recordatorio 3 horas antes de la cita</p>
-                                    </div>
-                                    <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" class="sr-only peer" checked>
-                                        <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-                                    </label>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-300 mb-1">Mensaje de confirmación</label>
-                                    <textarea class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full h-24">Hola {{nombre}}, tu cita para {{servicio}} está confirmada para el {{fecha}} a las {{hora}}. ¡Te esperamos!</textarea>
-                                    <p class="text-xs text-slate-400 mt-1">Variables disponibles: {{nombre}}, {{fecha}}, {{hora}}, {{servicio}}</p>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-300 mb-1">Mensaje de recordatorio</label>
-                                    <textarea class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full h-24">Hola {{nombre}}, recuerda que tienes cita para {{servicio}} mañana a las {{hora}}. ¡Te esperamos!</textarea>
-                                    <p class="text-xs text-slate-400 mt-1">Variables disponibles: {{nombre}}, {{fecha}}, {{hora}}, {{servicio}}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 flex justify-end">
-                        <button class="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg">
-                            Guardar Cambios
-                        </button>
-                    </div>
-                </section>
-            </main>
-        </div>
-    </div>
-
-    <!-- New Appointment Modal -->
-    <div id="new-appointment-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-slate-800 rounded-lg w-full max-w-md mx-4 border border-slate-700">
-            <div class="p-4 border-b border-slate-700 flex justify-between items-center">
-                <h3 class="text-lg font-semibold">Nueva Cita</h3>
-                <button class="text-slate-400 hover:text-white" id="close-appointment-modal">
+        <!-- Booking Form (initially hidden) -->
+        <section id="booking-form" class="hidden max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold gold-text">Reservar cita</h3>
+                <button onclick="closeBookingForm()" class="text-gray-500 hover:text-black">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="p-4">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1">Servicio</label>
-                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
-                            <option>Corte clásico</option>
-                            <option>Afeitado</option>
-                            <option>Corte + Barba</option>
-                            <option>Corte moderno</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1">Fecha</label>
-                        <input type="date" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1">Hora</label>
-                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
-                            <option>9:00 AM</option>
-                            <option>9:30 AM</option>
-                            <option>10:00 AM</option>
-                            <option>10:30 AM</option>
-                            <option>11:00 AM</option>
-                            <option>11:30 AM</option>
-                            <option>12:00 PM</option>
-                            <option>12:30 PM</option>
-                            <option>1:00 PM</option>
-                            <option>1:30 PM</option>
-                            <option>2:00 PM</option>
-                            <option>2:30 PM</option>
-                            <option>3:00 PM</option>
-                            <option>3:30 PM</option>
-                            <option>4:00 PM</option>
-                            <option>4:30 PM</option>
-                            <option>5:00 PM</option>
-                            <option>5:30 PM</option>
-                            <option>6:00 PM</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1">Nombre del cliente</label>
-                        <input type="text" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full" placeholder="Nombre completo">
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1">Teléfono</label>
-                        <input type="tel" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full" placeholder="555-123-4567">
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1">Anticipo</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">$</span>
-                            <input type="number" class="bg-slate-700 border border-slate-600 rounded-lg pl-8 pr-4 py-2 w-full" value="50">
-                            <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">MXN</span>
-                        </div>
-                    </div>
+            
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="font-bold mb-2" id="selected-service-name">Servicio: Corte Clásico</h4>
+                <div class="flex justify-between">
+                    <span id="selected-service-price">Precio: $200 MXN</span>
+                    <span id="selected-service-duration">Duración: 45 min</span>
                 </div>
             </div>
-            <div class="p-4 border-t border-slate-700 flex justify-end space-x-3">
-                <button class="px-4 py-2 border border-slate-600 rounded-lg hover:bg-slate-700" id="cancel-appointment-modal">
-                    Cancelar
-                </button>
-                <button class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg">
-                    Guardar Cita
-                </button>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2" for="booking-date">Selecciona fecha:</label>
+                <input type="text" id="booking-date" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="Elige una fecha">
+                <p class="text-sm text-gray-500 mt-1">Las citas solo pueden reservarse con máximo 1 semana de anticipación</p>
             </div>
-        </div>
-    </div>
 
-    <!-- New Service Modal -->
-    <div id="new-service-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-slate-800 rounded-lg w-full max-w-md mx-4 border border-slate-700">
-            <div class="p-4 border-b border-slate-700 flex justify-between items-center">
-                <h3 class="text-lg font-semibold">Nuevo Servicio</h3>
-                <button class="text-slate-400 hover:text-white" id="close-service-modal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="p-4">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1">Nombre</label>
-                        <input type="text" class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full" placeholder="Ej. Corte clásico">
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1">Precio</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">$</span>
-                            <input type="number" class="bg-slate-700 border border-slate-600 rounded-lg pl-8 pr-4 py-2 w-full" placeholder="200">
-                            <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400">MXN</span>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-1">Duración</label>
-                        <select class="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 w-full">
-                            <option>15 minutos</option>
-                            <option>20 minutos</option>
-                            <option selected>30 minutos</option>
-                            <option>45 minutos</option>
-                            <option>60 minutos</option>
-                        </select>
-                    </div>
-                    
-                    <div class="flex items-center justify-between">
-                        <span class="text-sm font-medium text-slate-300">Estado</span>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" checked>
-                            <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-                            <span class="ml-3 text-sm font-medium text-slate-300">Activo</span>
-                        </label>
-                    </div>
+            <div id="time-slots-container" class="hidden mb-6">
+                <label class="block text-gray-700 mb-2">Horarios disponibles:</label>
+                <div id="time-slots" class="grid grid-cols-3 gap-3">
+                    <!-- Time slots will be generated here -->
                 </div>
             </div>
-            <div class="p-4 border-t border-slate-700 flex justify-end space-x-3">
-                <button class="px-4 py-2 border border-slate-600 rounded-lg hover:bg-slate-700" id="cancel-service-modal">
-                    Cancelar
-                </button>
-                <button class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg">
-                    Guardar Servicio
-                </button>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2" for="full-name">Nombre completo:</label>
+                <input type="text" id="full-name" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="Tu nombre completo" required>
             </div>
-        </div>
-    </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2" for="phone">Número de celular:</label>
+                <input type="tel" id="phone" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500" placeholder="55 1234 5678" required>
+            </div>
+            
+            <div class="mb-6">
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="policy-check" type="checkbox" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-yellow-300" required>
+                    </div>
+                    <label for="policy-check" class="ml-2 text-sm text-gray-700">
+                        Requiero un anticipo no reembolsable de $50 MXN que se descuenta del precio final. Cancelaciones con menos de 24 horas pierden el anticipo.
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mb-6 text-center">
+                <button onclick="processPayment()" class="gold-bg text-black px-6 py-3 rounded-full font-bold w-full hover:bg-yellow-600 transition-all">
+                    Pagar anticipo de $50 MXN
+                </button>
+                <p class="text-sm text-gray-500 mt-2">El resto se paga al llegar</p>
+            </div>
+        </section>
 
-    <!-- Confirmation Modal -->
-    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-slate-800 rounded-lg w-full max-w-md mx-4 border border-slate-700">
-            <div class="p-4 border-b border-slate-700 flex justify-between items-center">
-                <h3 class="text-lg font-semibold" id="confirmation-title">Confirmar acción</h3>
-                <button class="text-slate-400 hover:text-white" id="close-confirmation-modal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="p-4">
-                <p id="confirmation-message">¿Estás seguro de que deseas realizar esta acción?</p>
+        <!-- Confirmation (initially hidden) -->
+        <section id="confirmation" class="hidden max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-12 text-center">
+            <div class="mb-6">
+                <i class="fas fa-check-circle text-5xl gold-text mb-4"></i>
+                <h3 class="text-2xl font-bold mb-2">¡Tu cita ha sido reservada!</h3>
+                <p class="text-gray-600 mb-4">Hemos enviado los detalles a tu celular</p>
                 
-                <div id="deposit-options" class="mt-4 hidden">
-                    <h4 class="text-sm font-medium text-slate-300 mb-2">¿Qué hacer con el anticipo?</h4>
-                    <div class="space-y-2">
-                        <div class="flex items-center">
-                            <input type="radio" id="keep-deposit" name="deposit-action" class="mr-2" checked>
-                            <label for="keep-deposit" class="text-sm">Conservar como saldo a favor del cliente</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="radio" id="lose-deposit" name="deposit-action" class="mr-2">
-                            <label for="lose-deposit" class="text-sm">Marcar como perdido (política de cancelación)</label>
-                        </div>
-                    </div>
+                <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+                    <p class="font-bold" id="confirmation-service">Servicio: Corte Clásico</p>
+                    <p id="confirmation-date">Fecha: 15 de Julio, 2023</p>
+                    <p id="confirmation-time">Hora: 4:30 PM</p>
+                    <p class="font-bold mt-2">Total a pagar: <span id="confirmation-total">$200 MXN</span></p>
+                    <p class="text-sm">(Anticipo de $50 MXN ya incluido)</p>
+                </div>
+                
+                <div class="flex flex-col space-y-3">
+                    <button onclick="addToCalendar()" class="bg-black text-white px-6 py-3 rounded-full font-medium hover:bg-gray-800 transition-all">
+                        <i class="far fa-calendar-plus mr-2"></i> Agregar a mi calendario
+                    </button>
+                    <button onclick="sendWhatsAppConfirmation()" class="bg-green-500 text-white px-6 py-3 rounded-full font-medium hover:bg-green-600 transition-all">
+                        <i class="fab fa-whatsapp mr-2"></i> Enviar confirmación por WhatsApp
+                    </button>
                 </div>
             </div>
-            <div class="p-4 border-t border-slate-700 flex justify-end space-x-3">
-                <button class="px-4 py-2 border border-slate-600 rounded-lg hover:bg-slate-700" id="cancel-confirmation-modal">
-                    Cancelar
-                </button>
-                <button class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg" id="confirm-action">
-                    Confirmar
-                </button>
-            </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 bg-slate-800 border border-slate-700 rounded-lg p-4 shadow-lg z-50 hidden">
-        <div class="flex items-center">
-            <div id="toast-icon" class="mr-3"></div>
-            <div>
-                <h4 id="toast-title" class="font-medium"></h4>
-                <p id="toast-message" class="text-sm text-slate-300"></p>
+    <!-- Footer -->
+    <footer class="bg-black text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-xl font-bold mb-4 gold-text">MONTANA BARBER SHOP</h4>
+                    <p class="mb-4">Barbería profesional con los mejores estilistas de la ciudad.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="facebook-btn w-10 h-10 rounded-full border border-white flex items-center justify-center hover:border-transparent transition-all">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="instagram-btn w-10 h-10 rounded-full border border-white flex items-center justify-center hover:border-transparent transition-all">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/52899128124" class="whatsapp-btn w-10 h-10 rounded-full border border-white flex items-center justify-center hover:border-transparent transition-all">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-xl font-bold mb-4 gold-text">Horario</h4>
+                    <p class="mb-2">Lunes a Viernes: 9:00 AM - 7:00 PM</p>
+                    <p class="mb-2">Sábado: 9:00 AM - 5:00 PM</p>
+                    <p>Domingo: Cerrado</p>
+                </div>
+                
+                <div>
+                    <h4 class="text-xl font-bold mb-4 gold-text">Ubicación</h4>
+                    <p class="mb-4">
+                        <i class="fas fa-map-marker-alt mr-2 gold-text"></i> 
+                        Calle Río San Juan #415,<br>
+                        Col. Las Fuentes,<br>
+                        Reynosa, México
+                    </p>
+                    <a href="https://maps.google.com" class="inline-flex items-center gold-text hover:underline">
+                        <i class="fas fa-directions mr-2"></i> Cómo llegar
+                    </a>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500 relative">
+                <p>&copy; 2025 Montana Barber Shop. Todos los derechos reservados.</p>
+                <div class="absolute right-4 bottom-2 flex items-center">
+                    <span class="text-white text-sm mr-2">made by savi</span>
+                    <img src="https://i.imgur.com/Q57FOQQ.png" alt="savi logo" class="h-6 w-auto">
+                </div>
             </div>
         </div>
-    </div>
+    </footer>
 
     <script>
-        // Navigation
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Update active nav item
-                document.querySelectorAll('.nav-item').forEach(nav => {
-                    nav.classList.remove('bg-amber-500/20', 'border-r-4', 'border-amber-500', 'text-white');
-                    nav.classList.add('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
-                });
-                this.classList.add('bg-amber-500/20', 'border-r-4', 'border-amber-500', 'text-white');
-                this.classList.remove('text-slate-300', 'hover:text-white', 'hover:bg-slate-800');
-                
-                // Show corresponding content
-                const target = this.getAttribute('href').substring(1);
-                document.querySelectorAll('.page-content').forEach(content => {
-                    content.classList.add('hidden');
-                });
-                document.getElementById(`${target}-content`).classList.remove('hidden');
-                
-                // Update page title
-                document.getElementById('page-title').textContent = this.querySelector('.nav-text').textContent;
-            });
-        });
-
-        // Toggle sidebar
-        document.querySelector('.menu-toggle').addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('sidebar-collapsed');
-        });
-
-        // Modal toggles
-        document.getElementById('new-appointment-btn').addEventListener('click', function() {
-            document.getElementById('new-appointment-modal').classList.remove('hidden');
-        });
-
-        document.getElementById('close-appointment-modal').addEventListener('click', function() {
-            document.getElementById('new-appointment-modal').classList.add('hidden');
-        });
-
-        document.getElementById('cancel-appointment-modal').addEventListener('click', function() {
-            document.getElementById('new-appointment-modal').classList.add('hidden');
-        });
-
-        document.getElementById('new-service-btn').addEventListener('click', function() {
-            document.getElementById('new-service-modal').classList.remove('hidden');
-        });
-
-        document.getElementById('close-service-modal').addEventListener('click', function() {
-            document.getElementById('new-service-modal').classList.add('hidden');
-        });
-
-        document.getElementById('cancel-service-modal').addEventListener('click', function() {
-            document.getElementById('new-service-modal').classList.add('hidden');
-        });
-
-        // Confirmation modal
-        function showConfirmation(title, message, showDepositOptions = false) {
-            document.getElementById('confirmation-title').textContent = title;
-            document.getElementById('confirmation-message').textContent = message;
-            document.getElementById('deposit-options').classList.toggle('hidden', !showDepositOptions);
-            document.getElementById('confirmation-modal').classList.remove('hidden');
-        }
-
-        document.getElementById('close-confirmation-modal').addEventListener('click', function() {
-            document.getElementById('confirmation-modal').classList.add('hidden');
-        });
-
-        document.getElementById('cancel-confirmation-modal').addEventListener('click', function() {
-            document.getElementById('confirmation-modal').classList.add('hidden');
-        });
-
-        document.getElementById('confirm-action').addEventListener('click', function() {
-            document.getElementById('confirmation-modal').classList.add('hidden');
-            showToast('success', 'Acción completada', 'La acción se realizó correctamente.');
-        });
-
-        // Toast notification
-        function showToast(type, title, message) {
-            const toast = document.getElementById('toast');
-            const toastIcon = document.getElementById('toast-icon');
-            const toastTitle = document.getElementById('toast-title');
-            const toastMessage = document.getElementById('toast-message');
+        // Selected service data
+        let selectedService = {
+            name: '',
+            price: 0,
+            duration: 0
+        };
+        
+        // Booking data
+        let bookingData = {
+            date: '',
+            time: '',
+            customerName: '',
+            phone: ''
+        };
+        
+        // Initialize date picker
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const minDate = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour from now
+            const maxDate = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 1 week from now
             
-            // Set icon and color based on type
-            let iconClass, bgColor;
-            switch(type) {
-                case 'success':
-                    iconClass = 'fas fa-check-circle text-green-500';
-                    break;
-                case 'error':
-                    iconClass = 'fas fa-exclamation-circle text-red-500';
-                    break;
-                case 'warning':
-                    iconClass = 'fas fa-exclamation-triangle text-yellow-500';
-                    break;
-                default:
-                    iconClass = 'fas fa-info-circle text-blue-500';
-            }
-            
-            // Clear previous classes
-            toastIcon.className = '';
-            toastIcon.classList.add('fas', 'text-lg');
-            
-            // Add specific icon class
-            iconClass.split(' ').forEach(cls => toastIcon.classList.add(cls));
-            
-            // Set content
-            toastTitle.textContent = title;
-            toastMessage.textContent = message;
-            
-            // Show toast
-            toast.classList.remove('hidden');
-            
-            // Hide after 3 seconds
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000);
-        }
-
-        // Simulate actions that would trigger toasts
-        document.querySelectorAll('button[class*="text-red-400"]').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (this.querySelector('.fa-trash')) {
-                    showConfirmation('Eliminar servicio', '¿Estás seguro de que deseas eliminar este servicio?');
-                } else if (this.querySelector('.fa-times')) {
-                    showConfirmation('Cancelar cita', '¿Estás seguro de que deseas cancelar esta cita?', true);
+            // Initialize date picker (date only)
+            flatpickr("#booking-date", {
+                enableTime: false,
+                dateFormat: "d-m-Y",
+                minDate: minDate,
+                maxDate: maxDate,
+                disable: [
+                    function(date) {
+                        return (date.getDay() === 0); // Disable Sundays
+                    }
+                ],
+                locale: {
+                    firstDayOfWeek: 1 // Start week on Monday
+                },
+                onChange: function(selectedDates, dateStr, instance) {
+                    const date = selectedDates[0];
+                    bookingData.date = date.toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    
+                    // Generate time slots for selected date
+                    generateTimeSlots(date);
+                    document.getElementById('time-slots-container').classList.remove('hidden');
                 }
             });
-        });
 
-        document.querySelectorAll('button[class*="text-green-400"]').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                showToast('success', 'Cita completada', 'La cita ha sido marcada como completada.');
-            });
+            // Generate available time slots
+            function generateTimeSlots(date) {
+                const timeSlotsContainer = document.getElementById('time-slots');
+                timeSlotsContainer.innerHTML = '';
+                
+                // Business hours
+                const openingHour = 9; // 9 AM
+                const closingHour = 19; // 7 PM
+                const slotDuration = 30; // minutes
+                
+                // Generate slots from opening to closing time
+                for (let hour = openingHour; hour < closingHour; hour++) {
+                    for (let minute = 0; minute < 60; minute += slotDuration) {
+                        // Skip if it's the last slot of the day
+                        if (hour === closingHour - 1 && minute >= 30) continue;
+                        
+                        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                        
+                        const slot = document.createElement('button');
+                        slot.type = 'button';
+                        slot.className = 'bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg py-2 px-3 text-center transition-all';
+                        slot.textContent = timeString;
+                        
+                        slot.addEventListener('click', function() {
+                            // Remove active class from all slots
+                            document.querySelectorAll('#time-slots button').forEach(btn => {
+                                btn.classList.remove('bg-yellow-100', 'border-yellow-500');
+                            });
+                            
+                            // Add active class to selected slot
+                            this.classList.add('bg-yellow-100', 'border-yellow-500');
+                            
+                            bookingData.time = timeString;
+                        });
+                        
+                        timeSlotsContainer.appendChild(slot);
+                    }
+                }
+            }
         });
-
-        document.querySelectorAll('button[class*="text-blue-400"]').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                document.getElementById('new-appointment-modal').classList.remove('hidden');
-            });
-        });
+        
+        // Select service function
+        function selectService(name, price, duration) {
+            selectedService.name = name;
+            selectedService.price = price;
+            selectedService.duration = duration;
+            
+            // Update UI
+            document.getElementById('selected-service-name').textContent = `Servicio: ${name}`;
+            document.getElementById('selected-service-price').textContent = `Precio: $${price} MXN`;
+            document.getElementById('selected-service-duration').textContent = `Duración: ${duration} min`;
+            
+            // Show booking form
+            document.getElementById('services').classList.add('hidden');
+            document.getElementById('booking-form').classList.remove('hidden');
+        }
+        
+        // Close booking form
+        function closeBookingForm() {
+            document.getElementById('booking-form').classList.add('hidden');
+            document.getElementById('services').classList.remove('hidden');
+        }
+        
+        // Process payment (simulated)
+        function processPayment() {
+            // Validate form
+            const fullName = document.getElementById('full-name').value;
+            const phone = document.getElementById('phone').value;
+            const date = document.getElementById('booking-date').value;
+            const time = bookingData.time;
+            const policyCheck = document.getElementById('policy-check').checked;
+            
+            if (!fullName || !phone || !date || !time || !policyCheck) {
+                alert('Por favor completa todos los campos obligatorios y acepta las políticas.');
+                return;
+            }
+            
+            // Save booking data
+            bookingData.customerName = fullName;
+            bookingData.phone = phone;
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                // Update confirmation UI
+                document.getElementById('confirmation-service').textContent = `Servicio: ${selectedService.name}`;
+                document.getElementById('confirmation-date').textContent = `Fecha: ${bookingData.date}`;
+                document.getElementById('confirmation-time').textContent = `Hora: ${bookingData.time}`;
+                document.getElementById('confirmation-total').textContent = `$${selectedService.price} MXN`;
+                
+                // Show confirmation
+                document.getElementById('booking-form').classList.add('hidden');
+                document.getElementById('confirmation').classList.remove('hidden');
+            }, 1000);
+        }
+        
+        // Add to calendar function
+        function addToCalendar() {
+            // In a real implementation, this would generate an .ics file
+            alert('Evento agregado a tu calendario (simulación)');
+        }
+        
+        // Send WhatsApp confirmation
+        function sendWhatsAppConfirmation() {
+            const message = `Hola ${bookingData.customerName}, tu cita en Montana Barber Shop ha sido confirmada para el ${bookingData.date} a las ${bookingData.time} para el servicio ${selectedService.name}.`;
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/52899128124?text=${encodedMessage}`, '_blank');
+        }
     </script>
 </body>
 </html>
